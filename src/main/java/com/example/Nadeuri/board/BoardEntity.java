@@ -29,7 +29,7 @@ public class BoardEntity {
     private Long id;
 
     @Column(name = "member_no", nullable = false)
-    private Long memberId;
+    private Long memberId; //멤버 객체로 변경 필요
 
     @Column(name = "board_title", nullable = false)
     private String boardTitle;
