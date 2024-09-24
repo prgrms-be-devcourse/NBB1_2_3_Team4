@@ -77,4 +77,20 @@ public class BoardEntity {
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
     }
+
+    public static BoardEntity create(
+            final Long memberId,
+            final String boardTitle,
+            final String boardContent,
+            final Category category,
+            final String imageUrl
+    ) {
+        return BoardEntity.builder()
+                .memberId(memberId)
+                .boardTitle(boardTitle)
+                .boardContent(boardContent)
+                .category(category)
+                .imageUrl(imageUrl)
+                .build();
+    }
 }
