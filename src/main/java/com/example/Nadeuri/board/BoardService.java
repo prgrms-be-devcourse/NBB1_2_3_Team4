@@ -1,4 +1,4 @@
 package com.example.Nadeuri.board;
 
-public interface Repository {
+public class BoardService {
 }

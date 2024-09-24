@@ -1,4 +1,4 @@
 package com.example.Nadeuri.board;
 
-public class DTO {
+public interface BoardRepository {
 }
