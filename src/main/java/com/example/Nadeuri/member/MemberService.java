@@ -1,7 +1,5 @@
 package com.example.Nadeuri.member;
 
-
-import
 import com.example.Nadeuri.member.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

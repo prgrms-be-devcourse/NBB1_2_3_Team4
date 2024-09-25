@@ -1,7 +1,6 @@
 package com.example.Nadeuri.member;
 
 
-import com.example.Nadeuri.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
