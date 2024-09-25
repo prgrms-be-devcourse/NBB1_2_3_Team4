@@ -17,10 +17,12 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name="member") //테이블이름
 public class MemberEntity {
+
     @Id
     @Column(name = "member_no")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberNo;
+
     private String userId;
     private String email;
     private String password;

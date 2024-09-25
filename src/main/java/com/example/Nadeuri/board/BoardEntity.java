@@ -27,8 +27,7 @@ public class BoardEntity {
     //멤버 테이블 참조 FK
     @ManyToOne(fetch = FetchType.LAZY, optional = false) // optional = FK(참조키)에 널 허용하지않음
     @JoinColumn(name = "member_no") // 다른 테이블의 컬럼명
-    @Column(name = "member_no", nullable = false) //보드 테이블 컬럼명
-    private MemberEntity memberEntity; //멤버 객체로 변경 필요
+    private MemberEntity member; //멤버 객체로 변경 필요
 
     @Column(name = "board_title", nullable = false)
     private String boardTitle;
@@ -62,17 +61,18 @@ public class BoardEntity {
     @Builder
     public BoardEntity(
             final Long id,
-            final MemberEntity memberId,
+            final MemberEntity member,
             final String boardTitle,
             final String boardContent,
             final Category category,
             final String imageUrl,
             final LocalDateTime createdAt,
             final LocalDateTime updatedAt,
-            final LocalDateTime deletedAt
+            final LocalDateTime deletedAt,
+            final List<CommentEntity> comments
     ) {
         this.id = id;
-        this.memberEntity = memberId;
+        this.member = member;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
         this.category = category;
@@ -80,17 +80,19 @@ public class BoardEntity {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
+        this.comments = comments;
     }
 
+
     public static BoardEntity create(
-            final MemberEntity memberEntity,
+            final MemberEntity member,
             final String boardTitle,
             final String boardContent,
             final Category category,
             final String imageUrl
     ) {
         return BoardEntity.builder()
-                .memberId(memberEntity)
+                .member(member)
                 .boardTitle(boardTitle)
                 .boardContent(boardContent)
                 .category(category)

@@ -26,14 +26,14 @@ public class BoardController {
     /**
      * 게시글 등록
      */
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ApiResponse> register(
-            @RequestPart("request") @Valid final BoardCreateRequest request,
-            @RequestPart("image") final MultipartFile multipartFile
-    ) {
-        boardService.register(request, multipartFile);
-        return ResponseEntity.ok(ApiResponse.success(null));
-    }
+//    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+//    public ResponseEntity<ApiResponse> register(
+//            @RequestPart("request") @Valid final BoardCreateRequest request,
+//            @RequestPart("image") final MultipartFile multipartFile
+//    ) {
+//        boardService.register(request, multipartFile);
+//        return ResponseEntity.ok(ApiResponse.success(null));
+//    }
 
     //게시글 상세 조회 (1개 조회)
     @GetMapping("/{id}")
