@@ -35,6 +35,11 @@ public class CustomSecurityConfig {
                 .csrf( csrf -> csrf.disable())          //CSRF는 세션단위 관리 -> X
                 .sessionManagement( sess                //세션 사용 X
                         -> sess.sessionCreationPolicy(SessionCreationPolicy.NEVER));
+//        http.authorizeHttpRequests(auth -> auth
+//                        // 해당 API에 대해서는 모든 요청을 허가
+//                        .requestMatchers("/members/sign-up").permitAll()
+//                        .anyRequest().authenticated()
+//        );
 
         //JWTCheckFilter 필터 추가
         http.addFilterBefore(jwtCheckFilter,

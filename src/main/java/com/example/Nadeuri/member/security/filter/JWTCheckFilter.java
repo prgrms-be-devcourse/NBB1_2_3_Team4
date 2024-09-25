@@ -36,6 +36,15 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
+        if (request.getRequestURI().startsWith("/v1/members/sign-up")) {
+            //토큰 발급 관련 경로는 제외
+            return true;
+        }
+        if (request.getRequestURI().startsWith("/v1/members/login")) {
+            //토큰 발급 관련 경로는 제외
+            return true;
+        }
+
         if(!request.getRequestURI().startsWith("/v1/")) {   //application.properties에서 static설정도 추가해줘야함
             return true;
         }
@@ -64,12 +73,12 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             log.info("--- 토큰 유효성 검증 완료 ---");
 
             //SecurityContext 처리 ------------------------------------------
-            String mid = claims.get("mid").toString();
+            String userId = claims.get("userId").toString();
             String[] roles = claims.get("role").toString().split(",");
 
             //토큰을 이용하여 인증된 정보 저장
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    new CustomUserPrincipal(mid), null, Arrays.stream(roles)
+                    new CustomUserPrincipal(userId), null, Arrays.stream(roles)
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                     .collect(Collectors.toList())
             );

@@ -21,6 +21,7 @@ public class MemberDTO {
     private String role;
     private String nickname;
     private String profileImage;
+    private String birthDate;
 
 
     public MemberDTO(MemberEntity member) {
@@ -31,19 +32,20 @@ public class MemberDTO {
         this.role = member.getRole();
         this.nickname = member.getNickname();
         this.profileImage = member.getProfileImage();
+        this.birthDate = member.getBirthDate();
     }
 
-    public MemberEntity toEntity(String encodedPassword, String role) {
-
-        return MemberEntity.builder()
-                .userId(userId)
-                .name(name)
-                .password(encodedPassword)
-                .nickname(nickname)
-                .profileImage(profileImage)
-                .role(role)
-                .build();
-    }
+//    public MemberEntity toEntity(String encodedPassword, String role) {
+//
+//        return MemberEntity.builder()
+//                .userId(userId)
+//                .name(name)
+//                .password(encodedPassword)
+//                .nickname(nickname)
+//                .profileImage(profileImage)
+//                .role(role)
+//                .build();
+//    }
 
     //JWT 문자열의 내용 반환
     public Map<String, Object> getPayload() {

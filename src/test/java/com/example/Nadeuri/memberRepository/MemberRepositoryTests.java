@@ -1,5 +1,6 @@
 package com.example.Nadeuri.memberRepository;
 
+
 import com.example.Nadeuri.member.MemberEntity;
 import com.example.Nadeuri.member.MemberRepository;
 import lombok.extern.log4j.Log4j2;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -44,13 +46,13 @@ public class MemberRepositoryTests {
     }
 
     @Test  //SELECT 테스트
+    @Transactional
     public void testFindByUserId() {
         //GIVEN  //@Id 타입의 값으로 엔티티 조회
         String userId = "user1";
 
         //WHEN
-        Optional<MemberEntity> foundMember = memberRepository.findByUserId(userId);   //Optional<> =>
-        // 값이 있을 수도 없을 수도 있다는 뜻
+        Optional<MemberEntity> foundMember = memberRepository.findByUserId(userId);   //Optional<> => 값이 있을 수도 없을 수도 있다는 뜻
 
         //THEN
         assertNotNull(foundMember);
