@@ -49,7 +49,8 @@ public class MemberRepositoryTests {
         String userId = "user1";
 
         //WHEN
-        Optional<Member> foundMember = memberRepository.findByUserId(userId);   //Optional<> => 값이 있을 수도 없을 수도 있다는 뜻
+        Optional<MemberEntity> foundMember = memberRepository.findByUserId(userId);   //Optional<> =>
+        // 값이 있을 수도 없을 수도 있다는 뜻
 
         //THEN
         assertNotNull(foundMember);
