@@ -20,8 +20,8 @@ import java.time.LocalDateTime;
 @Table(name = "comment")
 @Entity
 public class CommentEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_no", nullable = false)
     private Long id;
 
@@ -29,9 +29,9 @@ public class CommentEntity {
     @JoinColumn(name = "board_no", nullable = false)
     private BoardEntity board;
 
-
-    @Column(name = "member_no", nullable = false)
-    private MemberEntity MemberEntity; //멤버 엔티티로 변경
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "member_no", nullable = false)
+    private MemberEntity member; //멤버 엔티티로 변경
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
@@ -45,10 +45,10 @@ public class CommentEntity {
     private LocalDateTime updatedAt;
 
     @Builder
-    public CommentEntity(Long id, BoardEntity board, MemberEntity MemberEntity, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public CommentEntity(Long id, BoardEntity board, MemberEntity member, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.board = board;
-        this.MemberEntity = MemberEntity;
+        this.member = member;
         this.content = content;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

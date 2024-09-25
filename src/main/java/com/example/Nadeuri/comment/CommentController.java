@@ -33,9 +33,8 @@ public class CommentController {
     @PutMapping("/{commentId}")
     public ResponseEntity<CommentDTO> updateComment(
             @PathVariable Long commentId,
-            @RequestParam String content,
-            @RequestParam Long memberId) {
-        CommentDTO updatedComment = commentService.updateComment(commentId, content, memberId);
+            @RequestBody CommentDTO commentDTO) {
+        CommentDTO updatedComment = commentService.updateComment(commentId, commentDTO.getContent(), commentDTO.getMemberId());
         return ResponseEntity.ok(updatedComment);
     }
 
@@ -43,8 +42,8 @@ public class CommentController {
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long commentId,
-            @RequestParam Long memberId) {
-        commentService.deleteComment(commentId, memberId);
+            @RequestBody CommentDTO commentDTO) {
+        commentService.deleteComment(commentId, commentDTO.getMemberId());
         return ResponseEntity.ok().build();
     }
 }

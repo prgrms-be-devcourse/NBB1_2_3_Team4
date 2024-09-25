@@ -2,6 +2,8 @@ package com.example.Nadeuri.comment;
 
 import com.example.Nadeuri.board.BoardEntity;
 import com.example.Nadeuri.board.BoardRepository;
+import com.example.Nadeuri.member.MemberEntity;
+import com.example.Nadeuri.member.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,10 +15,12 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
 
-    public CommentService(CommentRepository commentRepository, BoardRepository boardRepository) {
+    public CommentService(CommentRepository commentRepository, BoardRepository boardRepository, MemberRepository memberRepository) {
         this.commentRepository = commentRepository;
         this.boardRepository = boardRepository;
+        this.memberRepository = memberRepository;
     }
 
     // 댓글 생성
@@ -25,7 +29,10 @@ public class CommentService {
         BoardEntity board = boardRepository.findById(commentDTO.getBoardId())
                 .orElseThrow(() -> new IllegalArgumentException("게시판을 찾을 수 없습니다."));
 
-        CommentEntity commentEntity = CommentDTO.toEntity(commentDTO, board);
+        MemberEntity member = memberRepository.findById(commentDTO.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+
+        CommentEntity commentEntity = CommentDTO.toEntity(commentDTO, board, member);
         commentEntity = commentRepository.save(commentEntity);
         return CommentDTO.fromEntity(commentEntity);
     }
@@ -48,7 +55,7 @@ public class CommentService {
         CommentEntity comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
 
-        if (!comment.getMemberId().equals(memberId)) {
+        if (!comment.getMember().getMemberNo().equals(memberId)) {
             throw new IllegalArgumentException("이 댓글을 수정할 권한이 없습니다.");
         }
 
@@ -63,12 +70,10 @@ public class CommentService {
         CommentEntity comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
 
-        if (!comment.getMemberId().equals(memberId)) {
+        if (!comment.getMember().getMemberNo().equals(memberId)) {
             throw new IllegalArgumentException("이 댓글을 삭제할 권한이 없습니다.");
         }
 
         commentRepository.delete(comment);
     }
-
-
 }
