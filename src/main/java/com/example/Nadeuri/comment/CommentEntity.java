@@ -20,8 +20,8 @@ import java.time.LocalDateTime;
 @Table(name = "comment")
 @Entity
 public class CommentEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_no", nullable = false)
     private Long id;
 
