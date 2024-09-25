@@ -42,7 +42,7 @@ public class BoardController {
         return ResponseEntity.ok(ApiResponse.success(boardService.read(boardId)));
     }
 
-    //게시글 전체 조회 (1개 조회) --
+    //게시글 전체 조회  --
     @GetMapping
     public ResponseEntity<ApiResponse> page(@Validated BoardPageRequestDTO boardPageRequestDTO){
         log.info("pageController()---");
