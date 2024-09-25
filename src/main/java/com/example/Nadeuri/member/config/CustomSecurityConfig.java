@@ -1,5 +1,6 @@
 package com.example.Nadeuri.member.config;
 
+
 import com.example.Nadeuri.member.security.filter.JWTCheckFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +47,7 @@ public class CustomSecurityConfig {
         return http.build();
     }
 
-    //CORS ; Cross Origin Resource Sharing설정 관련 처리 -------------------------------  => 도메인 간 요청 거절 문제 때문에 설정
+    //CORS ; Cross Origin Resource Sharing설정 관련 처리 ---------------------------------------
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration corsConfig = new CorsConfiguration();
