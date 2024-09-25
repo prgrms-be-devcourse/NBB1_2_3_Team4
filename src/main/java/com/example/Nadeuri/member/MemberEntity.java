@@ -32,7 +32,6 @@ public class MemberEntity {
 
     public void changePassword(String password) {this.password = password;}
 
-
     public void changeProfileImage(String birthDate) {this.birthDate = birthDate;}
 
     public void changeNickname(String nickname) {this.nickname = nickname;}

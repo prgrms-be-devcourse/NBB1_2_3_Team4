@@ -36,6 +36,15 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
+        if (request.getRequestURI().startsWith("/v1/members/sign-up")) {
+            //토큰 발급 관련 경로는 제외
+            return true;
+        }
+        if (request.getRequestURI().startsWith("/v1/members/login")) {
+            //토큰 발급 관련 경로는 제외
+            return true;
+        }
+
         if(!request.getRequestURI().startsWith("/v1/")) {   //application.properties에서 static설정도 추가해줘야함
             return true;
         }

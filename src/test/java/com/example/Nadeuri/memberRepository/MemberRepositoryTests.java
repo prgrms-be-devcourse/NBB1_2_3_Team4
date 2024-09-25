@@ -49,7 +49,7 @@ public class MemberRepositoryTests {
     @Test  //SELECT 테스트
     public void testFindByUserId() {
         //GIVEN  //@Id 타입의 값으로 엔티티 조회
-        String userId = "user1";
+        String userId = "user2";
 
         //WHEN
         Optional<MemberEntity> foundMember = memberRepository.findByUserId(userId);   //Optional<> => 값이 있을 수도 없을 수도 있다는 뜻
