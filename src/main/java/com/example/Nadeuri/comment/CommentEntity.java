@@ -1,6 +1,7 @@
 package com.example.Nadeuri.comment;
 
 import com.example.Nadeuri.board.BoardEntity;
+import com.example.Nadeuri.member.MemberEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,8 +29,9 @@ public class CommentEntity {
     @JoinColumn(name = "board_no", nullable = false)
     private BoardEntity board;
 
+
     @Column(name = "member_no", nullable = false)
-    private Long memberId;
+    private MemberEntity MemberEntity; //멤버 엔티티로 변경
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
@@ -43,10 +45,10 @@ public class CommentEntity {
     private LocalDateTime updatedAt;
 
     @Builder
-    public CommentEntity(Long id, BoardEntity board, Long memberId, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public CommentEntity(Long id, BoardEntity board, MemberEntity MemberEntity, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.board = board;
-        this.memberId = memberId;
+        this.MemberEntity = MemberEntity;
         this.content = content;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

@@ -2,11 +2,9 @@ package com.example.Nadeuri.board.dto;
 
 import com.example.Nadeuri.board.BoardEntity;
 import com.example.Nadeuri.board.Category;
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+
 
 import java.time.LocalDateTime;
 

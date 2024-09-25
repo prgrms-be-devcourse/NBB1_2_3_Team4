@@ -1,6 +1,5 @@
 package com.example.Nadeuri.memberRepository;
 
-import com.example.Nadeuri.member.domain.Member;
 import com.example.Nadeuri.member.MemberRepository;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
