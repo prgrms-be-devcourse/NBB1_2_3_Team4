@@ -1,11 +1,10 @@
 package com.example.Nadeuri.member.security.filter;
 
-import com.example.Nadeuri.member.security.util.JWTUtil;
+
 import com.example.Nadeuri.member.security.auth.CustomUserPrincipal;
+import com.example.Nadeuri.member.security.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -26,27 +23,28 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @Log4j2
-public class JWTCheckFilter extends GenericFilterBean {
+public class JWTCheckFilter extends OncePerRequestFilter {
     private final JWTUtil jwtUtil;
 
-//    @Override             //필터링 적용 X
-//    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-//        log.info("--- shouldNotFilter()");
-//        log.info("--- requestURI : " + request.getRequestURI());
-//
-//        if (request.getRequestURI().startsWith("/api/v1/token/")) { //토큰 발급 관련 경로는 제외
-//            return true;
-//        }
-//
-//        if(!request.getRequestURI().startsWith("/api/")) {   //application.properties에서 static설정도 추가해줘야함
-//            return true;
-//        }
-//
-//        return false;    //그 외 모든 경로는 필터링
-//    }
+    @Override             //필터링 적용 X
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        log.info("--- shouldNotFilter()");
+        log.info("--- requestURI : " + request.getRequestURI());
+
+        if (request.getRequestURI().startsWith("/v1/token/")) {
+            //토큰 발급 관련 경로는 제외
+            return true;
+        }
+
+        if(!request.getRequestURI().startsWith("/v1/")) {   //application.properties에서 static설정도 추가해줘야함
+            return true;
+        }
+
+        return false;    //그 외 모든 경로는 필터링
+    }
 
     @Override             //필터링 적용 O - 액세스 토큰 확인
-    protected void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("--- doFilterInternal() ");
         log.info("--- requestURI : " + request.getRequestURI());
 
@@ -85,18 +83,10 @@ public class JWTCheckFilter extends GenericFilterBean {
         }
     }
 
-    // Request Header에서 토큰 정보 추출
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
-            return bearerToken.substring(7);
-        }
-        return null;
+    public void handleException(HttpServletResponse response, Exception e) throws IOException {
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setContentType("application/json");
+        response.getWriter().println("{\"error\": \"" + e.getMessage() + "\"}");
     }
 
-//    public void handleException(HttpServletResponse response, Exception e) throws IOException {
-//        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//        response.setContentType("application/json");
-//        response.getWriter().println("{\"error\": \"" + e.getMessage() + "\"}");
-//    }
 }
