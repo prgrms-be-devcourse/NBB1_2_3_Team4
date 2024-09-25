@@ -4,6 +4,8 @@ import com.example.Nadeuri.board.dto.BoardDTO;
 import com.example.Nadeuri.board.dto.request.BoardCreateRequest;
 import com.example.Nadeuri.board.dto.request.BoardPageRequestDTO;
 import com.example.Nadeuri.board.exception.BoardException;
+import com.example.Nadeuri.member.MemberEntity;
+import com.example.Nadeuri.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,7 @@ public class BoardService {
     private static final Logger log = LoggerFactory.getLogger(BoardService.class);
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 게시글 등록
@@ -29,9 +32,12 @@ public class BoardService {
     public void register(final BoardCreateRequest request, final MultipartFile boardImage) {
         try {
             String imageUrl = imageRepository.upload(boardImage);
+            MemberEntity memberEntity = memberRepository.findById(request.getMemberId())
+                    .orElseThrow(() -> new IllegalArgumentException("[ERROR] 유효하지 않은 회원입니다."));
+
 
             BoardEntity board = BoardEntity.create(
-                    request.getMemberId(),
+                    memberEntity,
                     request.getBoardTitle(),
                     request.getBoardContent(),
                     request.getCategory(),

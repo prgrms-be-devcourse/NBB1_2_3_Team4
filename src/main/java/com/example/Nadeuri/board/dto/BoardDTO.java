@@ -2,11 +2,9 @@ package com.example.Nadeuri.board.dto;
 
 import com.example.Nadeuri.board.BoardEntity;
 import com.example.Nadeuri.board.Category;
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+
 
 import java.time.LocalDateTime;
 
@@ -16,7 +14,7 @@ public class BoardDTO {
 
     private Long id;
 
-    private Long memberId; //멤버 객체로 변경 필요
+    private Long memberId;
 
     private String boardTitle;
 
@@ -34,7 +32,7 @@ public class BoardDTO {
 
     public BoardDTO(BoardEntity boardEntity) {
         this.id = boardEntity.getId();
-        this.memberId = boardEntity.getMemberId();
+        this.memberId = boardEntity.getMember().getMemberNo();
         this.boardTitle = boardEntity.getBoardTitle();
         this.boardContent = boardEntity.getBoardContent();
         this.category = boardEntity.getCategory();
@@ -44,19 +42,4 @@ public class BoardDTO {
         this.deletedAt = boardEntity.getDeletedAt();
     }
 
-    public BoardEntity toEntity(BoardDTO boardDTO){
-        BoardEntity boardEntity = BoardEntity.builder()
-                .id(id)
-                .memberId(memberId)
-                .boardTitle(boardTitle)
-                .boardContent(boardContent)
-                .category(category)
-                .imageUrl(imageUrl)
-                .createdAt(createdAt)
-                .updatedAt(updatedAt)
-                .deletedAt(deletedAt)
-                .build();
-
-        return boardEntity;
-    }
 }
