@@ -33,7 +33,7 @@ public class TokenController {
         Map<String, Object> payloadMap = foundMemberDTO.getPayload();
         String accessToken = jwtUtil.createToken(payloadMap, 60);    //60분 유효
 //        String accessToken = jwtUtil.createToken(payloadMap, 1);    //1분 유효
-        String refreshToken = jwtUtil.createToken(Map.of("userId", foundMemberDTO.getPassword()),
+        String refreshToken = jwtUtil.createToken(Map.of("userId", foundMemberDTO.getUserId()),
                 60 * 24 * 7);                   //7일 유효
 
         log.info("--- accessToken : " + accessToken);
@@ -53,17 +53,17 @@ public class TokenController {
         //5. 그 외의 예외               400
     }
 
-    //리프레시 토큰 검증 ------------------------------------------------------
+    //리프레시 토큰 검증 및 액세스토큰 만료시 토큰 재발급 ------------------------------------------------------
     @PostMapping("/refresh")
-    public ResponseEntity<Map<String,String>> refreshToken(
+    public ResponseEntity<Map<String,String>> refreshToken(  //쿼리 파라미터에 발급받은 refresh값과 userId 입력해서 요청
             @RequestHeader("Authorization") String headerAuth,
             @RequestParam("refreshToken") String refreshToken,
-            @RequestParam("mid") String mid) {
+            @RequestParam("userId") String userId) {
         //파라미터 값 전달 확인 - 값이 없으면 400 Bad Request 반환
         log.info("--- refreshToken()");
         log.info("--- Authorization : " + headerAuth);
         log.info("--- refreshToken : " + refreshToken);
-        log.info("--- mid : " + mid);
+        log.info("--- userId : " + userId);
         if(headerAuth == null || !headerAuth.startsWith("Bearer ")) {
             //액세스 토큰이 없는 경우
             return handleException("액세스 토큰이 없습니다.", 400);
@@ -73,7 +73,7 @@ public class TokenController {
             return handleException("리프레시 토큰이 없습니다.", 400);
         }
 
-        if(mid == null || mid.isEmpty()) { //리프레시 토큰이 없는 경우
+        if(userId == null || userId.isEmpty()) { //아이디가 없는 경우
             return handleException("아이디가 없습니다.", 400);
         }
 
@@ -89,7 +89,7 @@ public class TokenController {
 
             try {
                 //새로운 토큰 생성 메서드 호출
-                return ResponseEntity.ok(makeNewToken(mid, refreshToken));
+                return ResponseEntity.ok(makeNewToken(userId, refreshToken));
             } catch(ExpiredJwtException ee) {
                 log.info("--- 리프레시 토큰 만료 기간 경과");
                 return handleException("리프레시 토큰 기간 만료 : " + ee.getMessage(), 400);
@@ -103,22 +103,22 @@ public class TokenController {
     }
 
     //새로운 토큰 생성
-    public Map<String, String> makeNewToken(String mid, String refreshToken) {
+    public Map<String, String> makeNewToken(String userId, String refreshToken) {
         Map<String, Object> claims = jwtUtil.validateToken(refreshToken);  //리프레시 토큰 유효성 검증
         log.info("--- 리프레시 토큰 유효성 검증 완료 ---");
 
-        if(!claims.get("mid").equals(mid)) {  //claims의 mid와 매개변수로 전달받은 mid가 일치하지 않는 경우
-            throw new RuntimeException("INVALID REFRESH TOKEN mid");  //RuntimeException 발생 시키기 - INVALID REFRESH mid
+        if(!claims.get("userId").equals(userId)) {  //claims의 userId와 매개변수로 전달받은 userId가 일치하지 않는 경우
+            throw new RuntimeException("INVALID REFRESH TOKEN userId");  //RuntimeException 발생 시키기 - INVALID REFRESH userId
         }
         log.info("--- make new token ---");
-        MemberDTO foundMemberDTO = memberService.read(mid);
+        MemberDTO foundMemberDTO = memberService.read(userId);
         Map<String, Object> payloadMap = foundMemberDTO.getPayload();
         String newAccessToken = jwtUtil.createToken(payloadMap, 1);  //1분 유효
-        String newRefreshToken = jwtUtil.createToken(Map.of("mid", mid), 2); //2분 유효
+        String newRefreshToken = jwtUtil.createToken(Map.of("userId", userId), 2); //2분 유효
 
 
         //액세스 토큰과 리프레시 토큰 생성하여 mid와 반환
-        return Map.of("accessToken", newAccessToken, "refreshToken", newRefreshToken, "mid", mid);
+        return Map.of("accessToken", newAccessToken, "refreshToken", newRefreshToken, "userId", userId);
     }//END makeToken()
 
     //상태 코드 400과 메시지 전송
@@ -131,18 +131,18 @@ public class TokenController {
     public ResponseEntity<Map<String,String>> refreshVerify(
             @RequestHeader("Authorization") String headerAuth,
             @RequestParam("refreshToken")   String refreshToken,
-            @RequestParam("mid") String mid) {
+            @RequestParam("userId") String userId) {
         //1. 파라미터 값 확인 - 값이 없으면 메시지를 전달하여 400 BAD_REQUEST 반환
         if(headerAuth == null || !headerAuth.startsWith("Bearer ")) return sendResponse("액세스 토큰이 없습니다.");
         if(refreshToken.isEmpty()) return sendResponse("리프레시 토큰이 없습니다.");
-        if(mid.isEmpty())   return sendResponse("아이디가 없습니다.");
+        if(userId.isEmpty())   return sendResponse("아이디가 없습니다.");
 
         try { //2. 액세스 유효성 검증
             String accessToken = headerAuth.substring(7);
             Map<String, Object> claims = jwtUtil.validateToken(accessToken);
             log.info("--- 1.액세스 토큰 유효");
 
-            return ResponseEntity.ok(Map.of("accessToken", accessToken, "refreshToken", refreshToken, "mid", mid));
+            return ResponseEntity.ok(Map.of("accessToken", accessToken, "refreshToken", refreshToken, "userId", userId));
 
         } catch(ExpiredJwtException e) {
             log.info("--- 2.액세스 토큰 만료기간 경과");
@@ -151,18 +151,18 @@ public class TokenController {
                 Map<String, Object> claims = jwtUtil.validateToken(refreshToken);
                 log.info("--- 3.리프레시 토큰 유효");
 
-                if(!claims.get("mid").equals(mid)) { //mid가 일치하지 않는 경우
-                    return sendResponse("INVALID REFRESH TOKEN mid");
+                if(!claims.get("userId").equals(userId)) { //userId가 일치하지 않는 경우
+                    return sendResponse("INVALID REFRESH TOKEN userId");
                 }
 
                 log.info("--- 4.새로운 토큰 생성");
-                MemberDTO foundMemberDTO = memberService.read(mid);
+                MemberDTO foundMemberDTO = memberService.read(userId);
                 Map<String, Object> payloadMap = foundMemberDTO.getPayload();
                 String newAccessToken = jwtUtil.createToken(payloadMap, 1);  //1분 유효
-                String newRefreshToken = jwtUtil.createToken(Map.of("mid", mid), 3); //3분 유효
+                String newRefreshToken = jwtUtil.createToken(Map.of("userId", userId), 3); //3분 유효
 
                 //신규 생성 토큰들과 mid 반환
-                return ResponseEntity.ok(Map.of("accessToken", newAccessToken, "refreshToken", newRefreshToken, "mid", mid));
+                return ResponseEntity.ok(Map.of("accessToken", newAccessToken, "refreshToken", newRefreshToken, "userId", userId));
             }catch(ExpiredJwtException ee) {
                 log.info("--- 5.리프레시 토큰 만료기간 경과");
                 return sendResponse("리프레시 토큰 만료기간 경과" + ee.getMessage());
