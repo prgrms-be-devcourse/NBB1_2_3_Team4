@@ -1,5 +1,6 @@
 package com.example.Nadeuri.member;
 
+import com.example.Nadeuri.member.exception.DuplicateMemberException;
 import com.example.Nadeuri.member.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -41,7 +42,7 @@ public class MemberService {
     //회원 가입
     public MemberDTO signUp(SignupDTO signupDTO) {
         if (memberRepository.existsByUserId(signupDTO.getUserId())) {
-            throw new IllegalArgumentException("이미 사용 중인 사용자 이름입니다.");
+            throw new DuplicateMemberException("이미 사용 중인 사용자 이름입니다.");
         }
         // Password 암호화
         String encodedPassword = passwordEncoder.encode(signupDTO.getPassword());
