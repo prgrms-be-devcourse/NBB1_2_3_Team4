@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Member;
 import java.util.Optional;
 
 @Service
@@ -49,6 +50,10 @@ public class MemberService {
         String role = "USER";
 
         return new MemberDTO(memberRepository.save(signupDTO.toEntity(encodedPassword, role)));
+    }
+
+    public void deleteMember(){
+
     }
 
 

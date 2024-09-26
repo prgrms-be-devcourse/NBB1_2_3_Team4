@@ -53,7 +53,6 @@ public class BoardService {
         return new BoardDTO(board);
     }
 
-
         //게시글 전체 조회
     public Page<BoardDTO> page(BoardPageRequestDTO boardPageRequestDTO) {
         log.info("pageService()---");
