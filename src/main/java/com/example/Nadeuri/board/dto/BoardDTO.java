@@ -4,6 +4,7 @@ import com.example.Nadeuri.board.BoardEntity;
 import com.example.Nadeuri.board.Category;
 import com.example.Nadeuri.comment.CommentEntity;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Data
+@Getter // data에서 getter로 수정
 @NoArgsConstructor
 public class BoardDTO {
 

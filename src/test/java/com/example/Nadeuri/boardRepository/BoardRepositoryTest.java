@@ -7,6 +7,7 @@ import com.example.Nadeuri.board.ImageRepository;
 import com.example.Nadeuri.board.dto.BoardDTO;
 import com.example.Nadeuri.board.dto.request.BoardCreateRequest;
 import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -27,8 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @SpringBootTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Transactional(propagation =  Propagation.NOT_SUPPORTED)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // 실제 DB로 테스트
+@Transactional(propagation =  Propagation.NOT_SUPPORTED) // 트랜잭션을 강제로 사용안하도록, 읽기전용이나 외부에서 트랜잭션을 할때 유용
+@DisplayName("보드 단위 테스트")
 @Log4j2
 public class BoardRepositoryTest {
     @Autowired

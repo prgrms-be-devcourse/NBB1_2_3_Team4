@@ -4,7 +4,6 @@ import com.example.Nadeuri.board.dto.BoardDTO;
 import com.example.Nadeuri.board.dto.request.BoardCreateRequest;
 import com.example.Nadeuri.board.dto.request.BoardPageRequestDTO;
 import com.example.Nadeuri.board.dto.request.BoardUpdateRequest;
-import com.example.Nadeuri.board.exception.BoardException;
 import com.example.Nadeuri.member.MemberEntity;
 import com.example.Nadeuri.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -50,13 +49,13 @@ public class BoardService {
 
     //게시글 상세 조회 (1개 조회)
     public BoardDTO read(Long boardId) {
-        BoardEntity board = boardRepository.findById(boardId).orElseThrow(BoardException.NOT_FOUND::get);
+        BoardEntity board = retrieveBoard(boardId);
 
         return new BoardDTO(board);
     }
 
 
-    //    //게시글 전체 조회
+        //게시글 전체 조회
     public Page<BoardDTO> page(BoardPageRequestDTO boardPageRequestDTO) {
         log.info("pageService()---");
         try {
@@ -65,11 +64,11 @@ public class BoardService {
             return boardRepository.pageDTO(pageable);
         } catch (Exception e) {
             log.error("예외 코드 : " + e.getMessage());
-            throw BoardException.NOT_FOUND.get();
+            throw new IllegalArgumentException("[ERROR] 게시글을 찾을 수 없습니다.");
         }
     }
 
-    //    //게시글 전체 조회 (검색) -- 현재 멤버 테이블이 없어 참조를 못하여 작성자 검색은 추후 추가 예정
+        //게시글 전체 조회 (검색) -- 제목,작성자 검색
     public Page<BoardDTO> pageSearch(String keyword, BoardPageRequestDTO boardPageRequestDTO) {
         log.info("pageSearchService()---");
         try {
@@ -78,7 +77,7 @@ public class BoardService {
             return boardRepository.pageSearch(keyword,pageable);
         } catch (Exception e) {
             log.error("예외 코드 : " + e.getMessage());
-            throw BoardException.NOT_FOUND.get();
+            throw new IllegalArgumentException("[ERROR] 게시글을 찾을 수 없습니다.");
         }
     }
 
