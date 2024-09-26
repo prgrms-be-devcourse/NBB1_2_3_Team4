@@ -99,4 +99,18 @@ public class BoardEntity {
                 .imageUrl(imageUrl)
                 .build();
     }
+
+    public void update(
+            final MemberEntity member,
+            final String boardTitle,
+            final String boardContent,
+            final Category category,
+            final String imageUrl
+    ) {
+        this.member = member;
+        this.boardTitle = boardTitle;
+        this.boardContent = boardContent;
+        this.category = category;
+        this.imageUrl = imageUrl;
+    }
 }

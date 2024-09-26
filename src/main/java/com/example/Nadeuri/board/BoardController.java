@@ -2,6 +2,8 @@ package com.example.Nadeuri.board;
 
 import com.example.Nadeuri.board.dto.request.BoardCreateRequest;
 import com.example.Nadeuri.board.dto.request.BoardPageRequestDTO;
+import com.example.Nadeuri.board.dto.request.BoardUpdateRequest;
+import com.example.Nadeuri.board.dto.response.BoardUpdateResponse;
 import com.example.Nadeuri.common.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,5 +60,19 @@ public class BoardController {
         log.info("pageSearchController()---");
         return ResponseEntity.ok(ApiResponse.success(boardService.pageSearch(keyword,
                 boardPageRequestDTO)));
+    }
+
+    /**
+     * 게시판 수정
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse> update(
+            @PathVariable("id") Long boardId,
+            @RequestPart("request") @Valid final BoardUpdateRequest request,
+            @RequestPart("image") final MultipartFile multipartFile
+    ) {
+        BoardEntity board = boardService.update(boardId, request, multipartFile);
+        BoardUpdateResponse response = BoardUpdateResponse.from(board);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 }
