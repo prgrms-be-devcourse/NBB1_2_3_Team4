@@ -1,5 +1,6 @@
 package com.example.Nadeuri.memberRepository;
 
+
 import com.example.Nadeuri.member.MemberEntity;
 import com.example.Nadeuri.member.MemberRepository;
 import com.example.Nadeuri.member.exception.MemberException;
@@ -49,6 +50,7 @@ public class MemberRepositoryTests {
     }
 
     @Test  //SELECT 테스트
+    @Transactional
     public void testFindByUserId() {
         //GIVEN  //@Id 타입의 값으로 엔티티 조회
         String userId = "user1";

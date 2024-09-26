@@ -39,14 +39,16 @@ public class MemberService {
     }
 
     //회원 가입
-    public MemberDTO signUp(MemberDTO memberDTO) {
-        if (memberRepository.existsByUserId(memberDTO.getUserId())) {
+    public MemberDTO signUp(SignupDTO signupDTO) {
+        if (memberRepository.existsByUserId(signupDTO.getUserId())) {
             throw new IllegalArgumentException("이미 사용 중인 사용자 이름입니다.");
         }
         // Password 암호화
-        String encodedPassword = passwordEncoder.encode(memberDTO.getPassword());
+        String encodedPassword = passwordEncoder.encode(signupDTO.getPassword());
         String role = "USER";
 
-        return new MemberDTO(memberRepository.save(memberDTO.toEntity(encodedPassword, role)));
+        return new MemberDTO(memberRepository.save(signupDTO.toEntity(encodedPassword, role)));
     }
+
+
 }
