@@ -3,6 +3,7 @@ package com.example.Nadeuri.board;
 import com.example.Nadeuri.board.dto.BoardDTO;
 import com.example.Nadeuri.board.dto.request.BoardCreateRequest;
 import com.example.Nadeuri.board.dto.request.BoardPageRequestDTO;
+import com.example.Nadeuri.board.dto.request.BoardUpdateRequest;
 import com.example.Nadeuri.board.exception.BoardException;
 import com.example.Nadeuri.member.MemberEntity;
 import com.example.Nadeuri.member.MemberRepository;
@@ -32,9 +33,7 @@ public class BoardService {
     public void register(final BoardCreateRequest request, final MultipartFile boardImage) {
         try {
             String imageUrl = imageRepository.upload(boardImage);
-            MemberEntity memberEntity = memberRepository.findById(request.getMemberId())
-                    .orElseThrow(() -> new IllegalArgumentException("[ERROR] 유효하지 않은 회원입니다."));
-
+            MemberEntity memberEntity = retrieveMember(request.getMemberId());
 
             BoardEntity board = BoardEntity.create(
                     memberEntity,
@@ -82,4 +81,42 @@ public class BoardService {
             throw BoardException.NOT_FOUND.get();
         }
     }
+
+    /**
+     * 게시판 수정
+     */
+    @Transactional
+    public BoardEntity update(
+            final Long boardId,
+            final BoardUpdateRequest request,
+            final MultipartFile boardImage
+    ) {
+        MemberEntity memberEntity = retrieveMember(request.getMemberId());
+        BoardEntity boardEntity = retrieveBoard(boardId);
+
+        String imageUrl = (boardImage != null && !boardImage.isEmpty())
+                ? imageRepository.upload(boardImage)
+                : boardEntity.getImageUrl();
+
+        boardEntity.update(
+                memberEntity,
+                request.getBoardTitle(),
+                request.getBoardContent(),
+                request.getCategory(),
+                imageUrl
+        );
+        return boardRepository.save(boardEntity);
+    }
+
+    private MemberEntity retrieveMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 유효하지 않은 회원입니다."));
+    }
+
+    private BoardEntity retrieveBoard(Long boardId) {
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 게시글입니다."));
+    }
+
+
 }
