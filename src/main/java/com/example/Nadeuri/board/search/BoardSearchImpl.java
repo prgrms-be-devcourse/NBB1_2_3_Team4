@@ -53,7 +53,8 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
         QBoardEntity board = QBoardEntity.boardEntity;
 
         JPQLQuery<BoardEntity> query = from(board);
-        query.where(board.boardTitle.containsIgnoreCase(keyword)); // 키워드가 포함된 제목 필드들만 검색
+        query.where(board.boardTitle.containsIgnoreCase(keyword).or(board.member.userId.containsIgnoreCase(keyword)));
+        // 키워드가 포함된 제목 필드들만 검색
 
         getQuerydsl().applyPagination(pageable, query);
         JPQLQuery<BoardDTO> dtoQuery = query.select(

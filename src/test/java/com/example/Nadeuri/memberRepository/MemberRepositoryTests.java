@@ -3,6 +3,8 @@ package com.example.Nadeuri.memberRepository;
 
 import com.example.Nadeuri.member.MemberEntity;
 import com.example.Nadeuri.member.MemberRepository;
+import com.example.Nadeuri.member.exception.MemberException;
+import com.example.Nadeuri.member.exception.MemberTaskException;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +30,12 @@ public class MemberRepositoryTests {
     @Test
     public void testInsert() {    //테스트 데이터 100개 등록
         //user1 ~ user80 role USER로, user81 ~ user100   "  ADMIN으로 지정
-        IntStream.rangeClosed(1, 100).forEach(i -> {
+        IntStream.rangeClosed(1, 50).forEach(i -> {
             //GIVEN - Todo 엔티티 객체 생성
             MemberEntity member = MemberEntity.builder().userId("user" + i)
                     .password(passwordEncoder.encode("1111"))
+                    .name("유저"+i)
+                    .nickname("유저"+i+" 닉네임")
                     .email("user" + i + "@aaa.com")
                     .role(i <= 80 ? "USER" : "ADMIN")
                     .build();
@@ -62,13 +66,13 @@ public class MemberRepositoryTests {
         log.info("userId : " + foundMember.get().getUserId());
 
         /////////////////////////////////////////////////////
-//        try {
-//            userId = "user111111111";
-//            foundMember = memberRepository.findByUserId(userId);
-//            foundMember.orElseThrow(MemberException.NOT_FOUND::get);
-//        } catch(MemberTaskException e) {
-//            assertEquals(404, e.getCode());
-//            log.info("e : " + e);
-//        }
+        try {
+            userId = "user111111111";
+            foundMember = memberRepository.findByUserId(userId);
+            foundMember.orElseThrow(MemberException.NOT_FOUND::get);
+        } catch(MemberTaskException e) {
+            assertEquals(404, e.getCode());
+            log.info("e : " + e);
+        }
     }
 }

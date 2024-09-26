@@ -2,19 +2,23 @@ package com.example.Nadeuri.board.dto;
 
 import com.example.Nadeuri.board.BoardEntity;
 import com.example.Nadeuri.board.Category;
+import com.example.Nadeuri.comment.CommentEntity;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Data
+@Getter // data에서 getter로 수정
 @NoArgsConstructor
 public class BoardDTO {
 
     private Long id;
 
-    private Long memberId;
+    private String member; // 작성자
 
     private String boardTitle;
 
@@ -30,9 +34,11 @@ public class BoardDTO {
 
     protected LocalDateTime deletedAt;
 
+    private List<String> comments; //댓글
+
     public BoardDTO(BoardEntity boardEntity) {
         this.id = boardEntity.getId();
-        this.memberId = boardEntity.getMember().getMemberNo();
+        this.member = boardEntity.getMember().getUserId();
         this.boardTitle = boardEntity.getBoardTitle();
         this.boardContent = boardEntity.getBoardContent();
         this.category = boardEntity.getCategory();
@@ -40,6 +46,8 @@ public class BoardDTO {
         this.createdAt = boardEntity.getCreatedAt();
         this.updatedAt = boardEntity.getUpdatedAt();
         this.deletedAt = boardEntity.getDeletedAt();
+        this.comments = boardEntity.getComments().stream()
+                .map(CommentEntity::getContent)
+                .collect(Collectors.toList());
     }
-
 }

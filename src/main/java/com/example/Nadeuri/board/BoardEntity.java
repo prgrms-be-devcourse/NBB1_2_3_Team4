@@ -83,7 +83,6 @@ public class BoardEntity {
         this.comments = comments;
     }
 
-
     public static BoardEntity create(
             final MemberEntity member,
             final String boardTitle,
