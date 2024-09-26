@@ -41,7 +41,6 @@ public class TokenController {
 
         return ResponseEntity.ok(Map.of("accessToken", accessToken, "refreshToken", refreshToken));
 
-
     }
 
     //리프레시 토큰 발행 시 - 예외 상황 코드와 메시지 전송

@@ -17,10 +17,10 @@ public class SignupDTO {
     private String name;
     private String email;
     private String nickname;
-    private String profileImage;
+    private String imageUrl;
     private String birthDate;
 
-    public MemberEntity toEntity(String encodedPassword, String role) {
+    public MemberEntity toEntity(String encodedPassword, String role, String imageUrl) {
 
         return MemberEntity.builder()
                 .userId(userId)
@@ -29,7 +29,7 @@ public class SignupDTO {
                 .birthDate(birthDate)
                 .password(encodedPassword)
                 .nickname(nickname)
-                .profileImage(profileImage)
+                .profileImage(imageUrl)
                 .role(role)
                 .build();
     }

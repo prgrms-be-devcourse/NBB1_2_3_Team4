@@ -1,5 +1,6 @@
 package com.example.Nadeuri.member.controller;
 
+import com.example.Nadeuri.common.response.ApiResponse;
 import com.example.Nadeuri.member.*;
 import com.example.Nadeuri.member.security.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -21,11 +23,11 @@ public class MemberController {
     private final PasswordEncoder passwordEncoder;
     private final JWTUtil jwtUtil;
 
-    @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@RequestBody SignupDTO signUpDTO) {
-        MemberDTO memberDTO = memberService.signUp(signUpDTO);
+    @PostMapping("/sign-up") //회원가입
+    public ResponseEntity<ApiResponse> signUp(@RequestPart("signUpDTO") SignupDTO signUpDTO, @RequestPart("image") final MultipartFile profileImage) {
+        MemberDTO memberDTO = memberService.signUp(signUpDTO, profileImage);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "회원가입 성공", "memberId", memberDTO.getUserId()));
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 
 
@@ -42,7 +44,7 @@ public class MemberController {
 
         //토큰 생성
         Map<String, Object> payloadMap = foundMemberDTO.getPayload();
-        String accessToken = jwtUtil.createToken(payloadMap, 1);    //60분 유효
+        String accessToken = jwtUtil.createToken(payloadMap, 5);    //60분 유효
         String refreshToken = jwtUtil.createToken(Map.of("userId", foundMemberDTO.getUserId()),
                 60 * 24 * 7);                   //7일 유효
 
@@ -51,4 +53,6 @@ public class MemberController {
 
         return ResponseEntity.ok(Map.of("accessToken", accessToken, "refreshToken", refreshToken));
     }
+
+
 }
