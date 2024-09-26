@@ -157,7 +157,7 @@ public class TokenController {
                 log.info("--- 4.새로운 토큰 생성");
                 MemberDTO foundMemberDTO = memberService.read(userId);
                 Map<String, Object> payloadMap = foundMemberDTO.getPayload();
-                String newAccessToken = jwtUtil.createToken(payloadMap, 1);  //1분 유효
+                String newAccessToken = jwtUtil.createToken(payloadMap, 10);  //1분 유효
                 String newRefreshToken = jwtUtil.createToken(Map.of("userId", userId), 3); //3분 유효
 
                 //신규 생성 토큰들과 mid 반환

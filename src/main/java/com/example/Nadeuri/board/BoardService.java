@@ -10,6 +10,7 @@ import com.example.Nadeuri.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,13 +27,23 @@ public class BoardService {
     private final ImageRepository imageRepository;
     private final MemberRepository memberRepository;
 
+    @Value("${file.local.upload.path}")
+    private String uploadPath;
+
     /**
      * 게시글 등록
      */
     @Transactional
     public void register(final BoardCreateRequest request, final MultipartFile boardImage) {
         try {
-            String imageUrl = imageRepository.upload(boardImage);
+            String imageUrl;
+
+            if (boardImage == null || boardImage.isEmpty()) {
+                imageUrl = uploadPath + "/defaultImage.png";
+            } else {
+                imageUrl = imageRepository.upload(boardImage);
+            }
+
             MemberEntity memberEntity = retrieveMember(request.getMemberId());
 
             BoardEntity board = BoardEntity.create(
