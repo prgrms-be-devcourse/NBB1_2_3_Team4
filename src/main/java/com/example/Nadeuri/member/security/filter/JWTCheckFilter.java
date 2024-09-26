@@ -49,7 +49,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
-        return true;    //그 외 모든 경로는 필터링 false // true 모든 경로 허용
+        return false;    //그 외 모든 경로는 필터링 false // true 모든 경로 허용
     }
 
     @Override             //필터링 적용 O - 액세스 토큰 확인
