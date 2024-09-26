@@ -29,6 +29,13 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
 
+    // 유저가 작성한 모든 댓글 조회
+    @GetMapping("/member/{memberId}")
+    public ResponseEntity<List<CommentDTO>> getCommentsByMember(@PathVariable Long memberId) {
+        List<CommentDTO> comments = commentService.getCommentsByMemberId(memberId);
+        return ResponseEntity.ok(comments);
+    }
+
     // 댓글 수정
     @PutMapping("/{commentId}")
     public ResponseEntity<CommentDTO> updateComment(
@@ -42,8 +49,8 @@ public class CommentController {
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long commentId,
-            @RequestBody CommentDTO commentDTO) {
-        commentService.deleteComment(commentId, commentDTO.getMemberId());
+            @RequestParam Long memberId) {
+        commentService.deleteComment(commentId, memberId);
         return ResponseEntity.ok().build();
     }
 }
