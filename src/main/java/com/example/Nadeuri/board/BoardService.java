@@ -50,7 +50,6 @@ public class BoardService {
     //게시글 상세 조회 (1개 조회)
     public BoardDTO read(Long boardId) {
         BoardEntity board = retrieveBoard(boardId);
-
         return new BoardDTO(board);
     }
 
