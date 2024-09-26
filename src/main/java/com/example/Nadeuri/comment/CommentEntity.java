@@ -14,14 +14,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "comment")
 @Entity
 public class CommentEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_no", nullable = false)
     private Long id;
 
@@ -31,13 +31,13 @@ public class CommentEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_no", nullable = false)
-    private MemberEntity member; //멤버 엔티티로 변경
+    private MemberEntity member;
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
@@ -45,12 +45,15 @@ public class CommentEntity {
     private LocalDateTime updatedAt;
 
     @Builder
-    public CommentEntity(Long id, BoardEntity board, MemberEntity member, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public CommentEntity(Long id, BoardEntity board, MemberEntity member, String content) {
         this.id = id;
         this.board = board;
         this.member = member;
         this.content = content;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+    }
+
+    // content 업데이트 메서드
+    public void updateContent(String content) {
+        this.content = content;
     }
 }

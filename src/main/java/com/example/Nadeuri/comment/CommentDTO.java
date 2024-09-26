@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor
 public class CommentDTO {
@@ -14,11 +16,11 @@ public class CommentDTO {
     private Long boardId;
     private Long memberId;
     private String content;
-    private String createdAt;
-    private String updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @Builder
-    public CommentDTO(Long id, Long boardId, Long memberId, String content, String createdAt, String updatedAt) {
+    public CommentDTO(Long id, Long boardId, Long memberId, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.boardId = boardId;
         this.memberId = memberId;
@@ -34,8 +36,8 @@ public class CommentDTO {
                 .boardId(commentEntity.getBoard().getId())
                 .memberId(commentEntity.getMember().getMemberNo())
                 .content(commentEntity.getContent())
-                .createdAt(commentEntity.getCreatedAt().toString())
-                .updatedAt(commentEntity.getUpdatedAt() != null ? commentEntity.getUpdatedAt().toString() : null)
+                .createdAt(commentEntity.getCreatedAt())
+                .updatedAt(commentEntity.getUpdatedAt())
                 .build();
     }
 
