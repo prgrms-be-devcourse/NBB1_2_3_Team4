@@ -83,6 +83,21 @@ public class BoardEntity {
         this.comments = comments;
     }
 
+    public void changeBoardTitle(String boardTitle) {
+        this.boardTitle = boardTitle;
+    }
+
+    public void changeBoardContent(String boardContent) {
+        this.boardContent = boardContent;
+    }
+
+    public void changeCategory(Category category) {
+        this.category = category;
+    }
+
+    public void changeImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public static BoardEntity create(
             final MemberEntity member,
