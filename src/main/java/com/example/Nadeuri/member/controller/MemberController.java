@@ -42,14 +42,13 @@ public class MemberController {
 
         //토큰 생성
         Map<String, Object> payloadMap = foundMemberDTO.getPayload();
-        String accessToken = jwtUtil.createToken(payloadMap, 60);    //60분 유효
-        String refreshToken = jwtUtil.createToken(Map.of("userId", foundMemberDTO.getPassword()),
+        String accessToken = jwtUtil.createToken(payloadMap, 1);    //60분 유효
+        String refreshToken = jwtUtil.createToken(Map.of("userId", foundMemberDTO.getUserId()),
                 60 * 24 * 7);                   //7일 유효
 
         log.info("--- accessToken : " + accessToken);
         log.info("--- refreshToken : " + refreshToken);
 
         return ResponseEntity.ok(Map.of("accessToken", accessToken, "refreshToken", refreshToken));
-
     }
 }

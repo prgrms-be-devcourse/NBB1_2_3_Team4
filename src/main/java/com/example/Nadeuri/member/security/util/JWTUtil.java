@@ -28,7 +28,8 @@ public class JWTUtil {
         }
 
         Date now = new Date();   //토큰 발행 시간
-        return Jwts.builder().header().add("alg", "HS256")
+        return Jwts.builder()
+                .header().add("alg", "HS256")
                 .add("type", "JWT")
                 .and()
                 .issuedAt(now)       //토큰 발행 시간
