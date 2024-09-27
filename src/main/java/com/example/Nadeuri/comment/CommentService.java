@@ -27,66 +27,75 @@ public class CommentService {
     @Transactional
     public CommentDTO createComment(CommentDTO commentDTO) {
         BoardEntity board = boardRepository.findById(commentDTO.getBoardId())
-                .orElseThrow(() -> new IllegalArgumentException("ID가 " + commentDTO.getBoardId() + "인 게시판을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("게시판을 찾을 수 없습니다. ID: " + commentDTO.getBoardId()));
 
         MemberEntity member = memberRepository.findById(commentDTO.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("ID가 " + commentDTO.getMemberId() + "인 회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다. ID: " + commentDTO.getMemberId()));
 
         CommentEntity comment = CommentDTO.toEntity(commentDTO, board, member);
         comment = commentRepository.save(comment);
+
         return CommentDTO.fromEntity(comment);
     }
 
     // 게시글 ID로 댓글 조회
     @Transactional(readOnly = true)
-    public List<CommentDTO> getCommentsByBoardId(Long boardId) {
+    public List<CommentDTO> readBoardId(Long boardId) {
         List<CommentEntity> comments = commentRepository.findByBoard_Id(boardId);
         List<CommentDTO> commentDTOs = new ArrayList<>();
+
         for (CommentEntity comment : comments) {
-            CommentDTO dto = CommentDTO.fromEntity(comment);
-            commentDTOs.add(dto);
+            commentDTOs.add(CommentDTO.fromEntity(comment));
         }
+
         return commentDTOs;
     }
 
     // 유저가 작성한 모든 댓글 조회
     @Transactional(readOnly = true)
-    public List<CommentDTO> getCommentsByMemberId(Long memberId) {
+    public List<CommentDTO> readMemberId(Long memberId) {
         List<CommentEntity> comments = commentRepository.findByMember_MemberNo(memberId);
         List<CommentDTO> commentDTOs = new ArrayList<>();
+
         for (CommentEntity comment : comments) {
-            CommentDTO dto = CommentDTO.fromEntity(comment);
-            commentDTOs.add(dto);
+            commentDTOs.add(CommentDTO.fromEntity(comment));
         }
+
         return commentDTOs;
     }
 
     // 댓글 수정
     @Transactional
     public CommentDTO updateComment(Long commentId, String content, Long memberId) {
-        CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("ID가 " + commentId + "인 댓글을 찾을 수 없습니다."));
-
-        if (!comment.getMember().getMemberNo().equals(memberId)) {
-            throw new IllegalArgumentException("이 댓글을 수정할 권한이 없습니다.");
-        }
-
+        CommentEntity comment = check(commentId, memberId);
         comment.updateContent(content);
 
-        // 이미 영속성 컨텍스트에 있는 객체이므로 save 필요 없음
         return CommentDTO.fromEntity(comment);
     }
 
     // 댓글 삭제
     @Transactional
     public void deleteComment(Long commentId, Long memberId) {
+        CommentEntity comment = check(commentId, memberId);
+        commentRepository.delete(comment);
+    }
+
+    // 댓글 작성자 검증하는 메서드 - Controller
+    public boolean checkOwner(Long commentId, String username) {
         CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("ID가 " + commentId + "인 댓글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다. ID: " + commentId));
+        return comment.getMember().getMemberNo().toString().equals(username);
+    }
+
+    // 댓글 작성자 검증하는 메서드 - Service
+    private CommentEntity check(Long commentId, Long memberId) {
+        CommentEntity comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다. ID: " + commentId));
 
         if (!comment.getMember().getMemberNo().equals(memberId)) {
-            throw new IllegalArgumentException("이 댓글을 삭제할 권한이 없습니다.");
+            throw new IllegalArgumentException("이 댓글에 대한 권한이 없습니다. ID: " + commentId);
         }
 
-        commentRepository.delete(comment);
+        return comment;
     }
 }
