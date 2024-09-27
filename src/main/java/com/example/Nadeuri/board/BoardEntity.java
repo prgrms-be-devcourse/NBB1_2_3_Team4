@@ -83,7 +83,6 @@ public class BoardEntity {
         this.comments = comments;
     }
 
-
     public static BoardEntity create(
             final MemberEntity member,
             final String boardTitle,
@@ -112,5 +111,9 @@ public class BoardEntity {
         this.boardContent = boardContent;
         this.category = category;
         this.imageUrl = imageUrl;
+    }
+
+    public void recordDeletion(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }
