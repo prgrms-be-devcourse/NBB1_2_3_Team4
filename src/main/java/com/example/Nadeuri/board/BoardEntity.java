@@ -112,4 +112,8 @@ public class BoardEntity {
         this.category = category;
         this.imageUrl = imageUrl;
     }
+
+    public void recordDeletion(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
 }
