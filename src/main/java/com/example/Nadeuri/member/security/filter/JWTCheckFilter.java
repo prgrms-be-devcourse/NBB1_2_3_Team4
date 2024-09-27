@@ -76,7 +76,6 @@ public class JWTCheckFilter extends OncePerRequestFilter {
 
             //SecurityContext 처리 ------------------------------------------
             String userId = claims.get("userId").toString();
-//            String[] roles = claims.get("role").toString().split(",");
             String roleString = claims.get("role").toString();
             Role role = Role.valueOf(roleString);
 
@@ -112,5 +111,4 @@ public class JWTCheckFilter extends OncePerRequestFilter {
         response.setContentType("application/json");
         response.getWriter().println("{\"error\": \"" + e.getMessage() + "\"}");
     }
-
 }
