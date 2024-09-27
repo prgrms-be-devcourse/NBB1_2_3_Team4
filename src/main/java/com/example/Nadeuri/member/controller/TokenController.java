@@ -1,6 +1,6 @@
 package com.example.Nadeuri.member.controller;
 
-import com.example.Nadeuri.member.MemberDTO;
+import com.example.Nadeuri.member.dto.MemberDTO;
 import com.example.Nadeuri.member.security.util.JWTUtil;
 import com.example.Nadeuri.member.MemberService;
 import io.jsonwebtoken.ExpiredJwtException;

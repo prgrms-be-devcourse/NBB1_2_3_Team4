@@ -1,11 +1,10 @@
-package com.example.Nadeuri.member;
+package com.example.Nadeuri.member.dto.request;
 
+import com.example.Nadeuri.member.MemberEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
