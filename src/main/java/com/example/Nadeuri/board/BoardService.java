@@ -106,7 +106,7 @@ public class BoardService {
 
         String imageUrl = (boardImage != null && !boardImage.isEmpty())
                 ? imageRepository.upload(boardImage)
-                : boardEntity.getImageUrl();
+                : uploadPath + "/defaultImage.png";
 
         boardEntity.update(
                 memberEntity,
