@@ -76,6 +76,7 @@ public class MemberController {
         }
 
         memberService.updateMember(userId, memberUpdateRequest, profileImage);
+        log.info(memberUpdateRequest.getRole());
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 

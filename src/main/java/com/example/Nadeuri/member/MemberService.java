@@ -62,7 +62,7 @@ public class MemberService {
         }
         // Password 암호화
         String encodedPassword = passwordEncoder.encode(signupDTO.getPassword());
-        String role = "USER";
+        Role role = Role.USER;
 
         memberRepository.save(signupDTO.toEntity(encodedPassword, role, imageUrl));
     }
@@ -80,7 +80,7 @@ public class MemberService {
         memberEntity.changeProfileImage(imageUrl);
 
 
-        if (request.getRole() != null && !request.getRole().isEmpty()) {
+        if (request.getRole() != null) {
             memberEntity.changeRole(request.getRole());
         }
         if (request.getPassword() != null && !request.getPassword().isEmpty()) {
