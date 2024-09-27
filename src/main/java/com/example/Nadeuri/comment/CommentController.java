@@ -1,6 +1,9 @@
 package com.example.Nadeuri.comment;
 
+import com.example.Nadeuri.member.security.auth.CustomUserPrincipal;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,42 +18,66 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    // 댓글 생성
+    // 댓글 생성 - 일반 사용자만 댓글 생성 가능
     @PostMapping
-    public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO) {
-        CommentDTO createdComment = commentService.createComment(commentDTO);
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<CommentDTO> createComment(
+            @RequestBody CommentDTO commentDTO,
+            @AuthenticationPrincipal CustomUserPrincipal user) {
+        Long memberId = extractMemberId(user);
+
+        // 새로운 댓글 생성
+        CommentDTO newComment = CommentDTO.builder()
+                .memberId(memberId)
+                .boardId(commentDTO.getBoardId())
+                .content(commentDTO.getContent())
+                .build();
+
+        CommentDTO createdComment = commentService.createComment(newComment);
         return ResponseEntity.ok(createdComment);
     }
 
-    // 게시글에 있는 댓글 조회
+    // 게시글에 달린 모든 댓글 조회 - 누구나 조회 가능
     @GetMapping("/board/{boardId}")
-    public ResponseEntity<List<CommentDTO>> getCommentsByBoard(@PathVariable Long boardId) {
-        List<CommentDTO> comments = commentService.getCommentsByBoardId(boardId);
+    public ResponseEntity<List<CommentDTO>> readBoard(
+            @PathVariable Long boardId) {
+        List<CommentDTO> comments = commentService.readBoardId(boardId);
         return ResponseEntity.ok(comments);
     }
 
-    // 유저가 작성한 모든 댓글 조회
+    // 사용자가 작성한 모든 댓글 조회 - 누구나 조회 가능
     @GetMapping("/member/{memberId}")
-    public ResponseEntity<List<CommentDTO>> getCommentsByMember(@PathVariable Long memberId) {
-        List<CommentDTO> comments = commentService.getCommentsByMemberId(memberId);
+    public ResponseEntity<List<CommentDTO>> readMember(
+            @PathVariable Long memberId) {
+        List<CommentDTO> comments = commentService.readMemberId(memberId);
         return ResponseEntity.ok(comments);
     }
 
-    // 댓글 수정
+    // 댓글 수정 - 자신의 댓글이거나 ADMIN 경우만 가능
     @PutMapping("/{commentId}")
+    @PreAuthorize("hasRole('ADMIN') or #commentDTO.memberId.toString() == authentication.name")
     public ResponseEntity<CommentDTO> updateComment(
             @PathVariable Long commentId,
-            @RequestBody CommentDTO commentDTO) {
-        CommentDTO updatedComment = commentService.updateComment(commentId, commentDTO.getContent(), commentDTO.getMemberId());
+            @RequestBody CommentDTO commentDTO,
+            @AuthenticationPrincipal CustomUserPrincipal user) {
+        Long memberId = extractMemberId(user);
+        CommentDTO updatedComment = commentService.updateComment(commentId, commentDTO.getContent(), memberId);
         return ResponseEntity.ok(updatedComment);
     }
 
-    // 댓글 삭제
+    // 댓글 삭제 - 자신의 댓글이거나 ADMIN 경우만 가능
     @DeleteMapping("/{commentId}")
+    @PreAuthorize("hasRole('ADMIN') or @commentService.checkOwner(#commentId, authentication.name)")
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long commentId,
-            @RequestParam Long memberId) {
+            @AuthenticationPrincipal CustomUserPrincipal user) {
+        Long memberId = extractMemberId(user);
         commentService.deleteComment(commentId, memberId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
+    }
+
+    // 사용자 ID 추출 메서드
+    private Long extractMemberId(CustomUserPrincipal user) {
+        return Long.valueOf(user.getName());
     }
 }
