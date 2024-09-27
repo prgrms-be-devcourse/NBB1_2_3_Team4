@@ -75,7 +75,7 @@ public class MemberService {
 
         String imageUrl = (profileImage != null && !profileImage.isEmpty())
                 ? imageRepository.upload(profileImage)
-                : memberEntity.getProfileImage();
+                : uploadPath + "/defaultImage.png";
 
         memberEntity.changeProfileImage(imageUrl);
 
