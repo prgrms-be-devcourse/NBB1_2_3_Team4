@@ -17,7 +17,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class CommentServiceTest {
+class CommentControllerTest {
 
     @Mock
     private CommentRepository commentRepository;
@@ -100,7 +100,7 @@ class CommentServiceTest {
 
         when(commentRepository.findByBoard_Id(boardId)).thenReturn(Arrays.asList(comment1, comment2));
 
-        List<CommentDTO> comments = commentService.getCommentsByBoardId(boardId);
+        List<CommentDTO> comments = commentService.readBoardId(boardId);
 
         assertEquals(2, comments.size());
         assertEquals("첫 번째 댓글", comments.get(0).getContent());
@@ -136,14 +136,16 @@ class CommentServiceTest {
 
         when(commentRepository.findByMember_MemberNo(memberId)).thenReturn(Arrays.asList(comment1, comment2));
 
-        List<CommentDTO> comments = commentService.getCommentsByMemberId(memberId);
+        List<CommentDTO> comments = commentService.readMemberId(memberId);
 
+        // 결과 확인
         assertEquals(2, comments.size());
         assertEquals("유저의 첫 번째 댓글", comments.get(0).getContent());
         assertEquals("유저의 두 번째 댓글", comments.get(1).getContent());
         verify(commentRepository, times(1)).findByMember_MemberNo(memberId);
     }
 
+    // 댓글 수정 테스트
     @Test
     void 댓글_수정_테스트() {
         Long commentId = 1L;
