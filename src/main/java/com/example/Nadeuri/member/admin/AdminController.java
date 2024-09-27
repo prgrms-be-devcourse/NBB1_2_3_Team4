@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/v1/admin")
-public class AdminController {
+public class AdminController { //관리자 api
     private final AdminService adminService;
 
     //멤버 전체 조회
