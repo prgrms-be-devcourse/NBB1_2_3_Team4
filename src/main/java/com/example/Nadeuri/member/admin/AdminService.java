@@ -1,9 +1,9 @@
 package com.example.Nadeuri.member.admin;
 
-import com.example.Nadeuri.member.MemberDTO;
 import com.example.Nadeuri.member.MemberEntity;
 import com.example.Nadeuri.member.MemberRepository;
 import com.example.Nadeuri.member.MemberService;
+import com.example.Nadeuri.member.dto.MemberDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
