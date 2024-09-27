@@ -26,18 +26,20 @@ public class JWTUtil {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+        //시크릿키 객체를 생성 후 UTF-8 인코딩으로 바이트로 변환
 
         Date now = new Date();   //토큰 발행 시간
         return Jwts.builder()
-                .header().add("alg", "HS256")
-                .add("type", "JWT")
+                .header().add("alg", "HS256")//HS256알고리즘으로 헤더에 alg필드로 추가
+                .add("type", "JWT")//헤더에 타입 필드를 추가하고 값으로 jwt 설정
                 .and()
                 .issuedAt(now)       //토큰 발행 시간
                 .expiration(         //토큰 만료 시간
                         new Date( now.getTime() + Duration.ofMinutes(min).toMillis()) )
-                .claims(valueMap)   //저장 데이터
-                .signWith(key)      //서명
+                .claims(valueMap)   //저장 데이터 (jwt페이로드에 저장되는 사용자 정보와 같은 추가 데이터)
+                .signWith(key)      //서명(서명을위한 비밀키를 key로 설정)
                 .compact();
+        //헤더,페이로드,서명이 결합되어 jwt문자열을 만듬
     }
 
     //검증 기능 수행

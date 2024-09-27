@@ -65,7 +65,6 @@ public class BoardService {
         return new BoardDTO(board);
     }
 
-
         //게시글 전체 조회
     public Page<BoardDTO> page(BoardPageRequestDTO boardPageRequestDTO) {
         log.info("pageService()---");
@@ -140,6 +139,5 @@ public class BoardService {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 게시글입니다."));
     }
-
 
 }
