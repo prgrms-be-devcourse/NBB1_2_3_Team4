@@ -1,6 +1,7 @@
 package com.example.Nadeuri.member.security.filter;
 
 
+import com.example.Nadeuri.member.Role;
 import com.example.Nadeuri.member.security.auth.CustomUserPrincipal;
 import com.example.Nadeuri.member.security.util.JWTUtil;
 import jakarta.servlet.FilterChain;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -17,7 +19,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -72,13 +76,26 @@ public class JWTCheckFilter extends OncePerRequestFilter {
 
             //SecurityContext 처리 ------------------------------------------
             String userId = claims.get("userId").toString();
-            String[] roles = claims.get("role").toString().split(",");
+//            String[] roles = claims.get("role").toString().split(",");
+            String roleString = claims.get("role").toString();
+            Role role = Role.valueOf(roleString);
+
+            Set<Role> authorities = role.getAuthorities();
+
+            authorities.forEach(authority -> log.info("beforeAuthority: " + authority.name()));
+
+            // Spring Security의 권한 객체로 변환
+            List<GrantedAuthority> grantedAuthorities = authorities.stream()
+                    .map(r -> new SimpleGrantedAuthority("ROLE_" + r.name()))
+                    .collect(Collectors.toList());
+
+            grantedAuthorities.forEach(authority -> logger.info("Granted Authority: {}"+ authority.getAuthority()));
+
+
 
             //토큰을 이용하여 인증된 정보 저장
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    new CustomUserPrincipal(userId), null, Arrays.stream(roles)
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                    .collect(Collectors.toList())
+                    new CustomUserPrincipal(userId), null, grantedAuthorities
             );
 
             //SecurityContext에 인증/인가 정보 저장
