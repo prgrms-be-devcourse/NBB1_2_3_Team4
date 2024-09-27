@@ -1,6 +1,6 @@
 package com.example.Nadeuri.member.controller;
 
-import com.example.Nadeuri.member.MemberDTO;
+import com.example.Nadeuri.member.dto.MemberDTO;
 import com.example.Nadeuri.member.security.util.JWTUtil;
 import com.example.Nadeuri.member.MemberService;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -40,7 +40,6 @@ public class TokenController {
         log.info("--- refreshToken : " + refreshToken);
 
         return ResponseEntity.ok(Map.of("accessToken", accessToken, "refreshToken", refreshToken));
-
 
     }
 

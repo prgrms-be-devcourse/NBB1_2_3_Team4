@@ -1,6 +1,7 @@
-package com.example.Nadeuri.member;
+package com.example.Nadeuri.member.dto;
 
 
+import com.example.Nadeuri.member.MemberEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

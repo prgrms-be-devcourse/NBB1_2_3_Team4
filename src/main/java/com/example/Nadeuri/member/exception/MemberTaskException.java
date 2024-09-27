@@ -8,5 +8,4 @@ import lombok.Getter;
 public class MemberTaskException extends RuntimeException {
     private String message;
     private int code;
-
 }

@@ -1,11 +1,10 @@
-package com.example.Nadeuri.member;
+package com.example.Nadeuri.member.dto.request;
 
+import com.example.Nadeuri.member.MemberEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -17,10 +16,10 @@ public class SignupDTO {
     private String name;
     private String email;
     private String nickname;
-    private String profileImage;
+    private String imageUrl;
     private String birthDate;
 
-    public MemberEntity toEntity(String encodedPassword, String role) {
+    public MemberEntity toEntity(String encodedPassword, String role, String imageUrl) {
 
         return MemberEntity.builder()
                 .userId(userId)
@@ -29,7 +28,7 @@ public class SignupDTO {
                 .birthDate(birthDate)
                 .password(encodedPassword)
                 .nickname(nickname)
-                .profileImage(profileImage)
+                .profileImage(imageUrl)
                 .role(role)
                 .build();
     }
