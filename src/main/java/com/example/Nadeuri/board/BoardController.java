@@ -3,6 +3,7 @@ package com.example.Nadeuri.board;
 import com.example.Nadeuri.board.dto.request.BoardCreateRequest;
 import com.example.Nadeuri.board.dto.request.BoardPageRequestDTO;
 import com.example.Nadeuri.board.dto.request.BoardUpdateRequest;
+import com.example.Nadeuri.board.dto.response.BoardDeleteResponse;
 import com.example.Nadeuri.board.dto.response.BoardUpdateResponse;
 import com.example.Nadeuri.common.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -11,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -73,6 +75,18 @@ public class BoardController {
     ) {
         BoardEntity board = boardService.update(boardId, request, multipartFile);
         BoardUpdateResponse response = BoardUpdateResponse.from(board);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    /**
+     * 게시판 삭제
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> delete(
+            @PathVariable("id") Long boardId
+    ) {
+        BoardEntity board = boardService.delete(boardId);
+        BoardDeleteResponse response = BoardDeleteResponse.from(board);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 }

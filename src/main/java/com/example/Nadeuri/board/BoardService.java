@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import java.time.LocalDateTime;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -116,6 +117,19 @@ public class BoardService {
         );
         return boardRepository.save(boardEntity);
     }
+
+    /**
+     * 게시글 삭제
+     */
+    @Transactional
+    public BoardEntity delete(
+            final Long boardId
+    ) {
+        BoardEntity board = retrieveBoard(boardId);
+        board.recordDeletion(LocalDateTime.now());
+        return boardRepository.save(board);
+    }
+
 
     private MemberEntity retrieveMember(Long memberId) {
         return memberRepository.findById(memberId)
