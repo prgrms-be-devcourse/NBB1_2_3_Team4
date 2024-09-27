@@ -32,6 +32,18 @@ public class MemberEntity {
     private String profileImage;
     private String nickname;
 
+    @Builder //빌더 추가
+    public MemberEntity(String userId, String email, String password, String role, String birthDate, String name, String profileImage, String nickname) {
+        this.userId = userId;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.birthDate = birthDate;
+        this.name = name;
+        this.profileImage = profileImage;
+        this.nickname = nickname;
+    }
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true) // 테이블 이름을 맵핑
     private List<BoardEntity> boards;
 
@@ -42,7 +54,9 @@ public class MemberEntity {
 
     public void changePassword(String password) {this.password = password;}
 
-    public void changeProfileImage(String birthDate) {this.birthDate = birthDate;}
+    public void changeProfileImage(String profileImage) {this.profileImage = profileImage;} //오타 수정
+
+    public void changeBirthDate(String birthDate) {this.birthDate = birthDate;} //오타 수정
 
     public void changeNickname(String nickname) {this.nickname = nickname;}
 

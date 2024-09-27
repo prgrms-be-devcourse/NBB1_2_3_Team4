@@ -126,5 +126,4 @@ public class BoardService {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 게시글입니다."));
     }
 
-
 }

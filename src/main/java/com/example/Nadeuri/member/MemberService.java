@@ -7,8 +7,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.lang.reflect.Member;
 import java.util.Optional;
 
 @Service
@@ -23,7 +21,6 @@ public class MemberService {
         //userId와 password를 매개변수로 넘겨 받아 -------------------------------
         Optional<MemberEntity> foundMember= memberRepository.findByUserId(userId);
         MemberEntity member = foundMember.orElseThrow(MemberException.BAD_CREDENTIALS::get);  //데이터베이스에 존재하지 않는 경우 MemberTaskException의 BAD_CREDENTIALS 예외를 발생시키고
-
 
         if(!passwordEncoder.matches(password, member.getPassword())) {   //password가 데이터베이스의 값과 일치하지 않는 경우
             throw MemberException.BAD_CREDENTIALS.get();
@@ -51,10 +48,5 @@ public class MemberService {
 
         return new MemberDTO(memberRepository.save(signupDTO.toEntity(encodedPassword, role)));
     }
-
-    public void deleteMember(){
-
-    }
-
 
 }
