@@ -60,6 +60,8 @@ public class MemberEntity {
 
     public void changeNickname(String nickname) {this.nickname = nickname;}
 
+    public void changeName(String name) {this.name = name;}
+
     public void changeRole(String role) {this.role = role;}
 
 
