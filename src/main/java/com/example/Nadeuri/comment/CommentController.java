@@ -1,6 +1,7 @@
 package com.example.Nadeuri.comment;
 
 import com.example.Nadeuri.member.security.auth.CustomUserPrincipal;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,15 +23,15 @@ public class CommentController {
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CommentDTO> createComment(
-            @RequestBody CommentDTO commentDTO,
+            @Valid @RequestBody CommentRequestDTO commentRequestDTO,
             @AuthenticationPrincipal CustomUserPrincipal user) {
-        Long memberId = extractMemberId(user);
+        String userId = extractUserId(user);
 
         // 새로운 댓글 생성
         CommentDTO newComment = CommentDTO.builder()
-                .memberId(memberId)
-                .boardId(commentDTO.getBoardId())
-                .content(commentDTO.getContent())
+                .memberId(userId)
+                .boardId(commentRequestDTO.getBoardId())
+                .content(commentRequestDTO.getContent())
                 .build();
 
         CommentDTO createdComment = commentService.createComment(newComment);
@@ -48,20 +49,22 @@ public class CommentController {
     // 사용자가 작성한 모든 댓글 조회 - 누구나 조회 가능
     @GetMapping("/member/{memberId}")
     public ResponseEntity<List<CommentDTO>> readMember(
-            @PathVariable Long memberId) {
+            @PathVariable String memberId) {
         List<CommentDTO> comments = commentService.readMemberId(memberId);
         return ResponseEntity.ok(comments);
     }
 
     // 댓글 수정 - 자신의 댓글이거나 ADMIN 경우만 가능
     @PutMapping("/{commentId}")
-    @PreAuthorize("hasRole('ADMIN') or #commentDTO.memberId.toString() == authentication.name")
+    @PreAuthorize("hasRole('ADMIN') or #user.getName() == authentication.name")
     public ResponseEntity<CommentDTO> updateComment(
             @PathVariable Long commentId,
-            @RequestBody CommentDTO commentDTO,
+            @Valid @RequestBody CommentRequestDTO commentRequestDTO,
             @AuthenticationPrincipal CustomUserPrincipal user) {
-        Long memberId = extractMemberId(user);
-        CommentDTO updatedComment = commentService.updateComment(commentId, commentDTO.getContent(), memberId);
+        String userId = extractUserId(user);
+
+        // 업데이트된 댓글 생성
+        CommentDTO updatedComment = commentService.updateComment(commentId, commentRequestDTO.getContent(), userId);
         return ResponseEntity.ok(updatedComment);
     }
 
@@ -71,13 +74,13 @@ public class CommentController {
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long commentId,
             @AuthenticationPrincipal CustomUserPrincipal user) {
-        Long memberId = extractMemberId(user);
-        commentService.deleteComment(commentId, memberId);
+        String userId = extractUserId(user);
+        commentService.deleteComment(commentId, userId);
         return ResponseEntity.noContent().build();
     }
 
     // 사용자 ID 추출 메서드
-    private Long extractMemberId(CustomUserPrincipal user) {
-        return Long.valueOf(user.getName());
+    private String extractUserId(CustomUserPrincipal user) {
+        return user.getName();  // 사용자 이름을 추출하여 반환
     }
 }
