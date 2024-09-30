@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -62,6 +63,7 @@ public class BoardService {
     //게시글 상세 조회 (1개 조회)
     public BoardDTO read(Long boardId) {
         BoardEntity board = retrieveBoard(boardId);
+        if(! (board.getDeletedAt() == null)) throw new IllegalArgumentException("[ERROR] 삭제된 게시물 입니다.");
         return new BoardDTO(board);
     }
 
@@ -108,7 +110,7 @@ public class BoardService {
                 : uploadPath + "/defaultImage.png";
 
         boardEntity.update(
-                memberEntity,
+                memberEntity, // 멤버 엔티티를 업데이트하면 작성자가 바뀜
                 request.getBoardTitle(),
                 request.getBoardContent(),
                 request.getCategory(),

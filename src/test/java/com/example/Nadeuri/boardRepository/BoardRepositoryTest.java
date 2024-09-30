@@ -50,11 +50,26 @@ public class BoardRepositoryTest {
         assertNotNull(boardEntity);
     }
     @Test
-    @Transactional
     public void testPage(){//page로 받기
         Pageable pageable = PageRequest.of(0,10, Sort.by("id").descending());
 
         Page<BoardDTO> boardEntityPage = boardRepository.pageDTO(pageable);
+
+        assertNotNull(boardEntityPage);
+//        assertEquals(10,boardEntityPage.getTotalElements());
+//        assertEquals(1,boardEntityPage.getTotalPages());
+//        assertEquals(0,boardEntityPage.getNumber());
+//        assertEquals(10,boardEntityPage.getSize());
+//        assertEquals(10,boardEntityPage.getContent().size());
+
+        boardEntityPage.getContent().forEach(System.out::println);
+    }
+
+    @Test
+    public void testPageIsNotNull(){//삭제한 게시물 전체 조회
+        Pageable pageable = PageRequest.of(0,10, Sort.by("id").descending());
+
+        Page<BoardDTO> boardEntityPage = boardRepository.pageFindBoardIsNotNull(pageable);
 
         assertNotNull(boardEntityPage);
 //        assertEquals(10,boardEntityPage.getTotalElements());

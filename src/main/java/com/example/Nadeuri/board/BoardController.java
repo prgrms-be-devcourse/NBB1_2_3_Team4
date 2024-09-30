@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,8 +44,10 @@ public class BoardController {
 
     //게시글 상세 조회 (1개 조회)
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse> read(@PathVariable("id") Long boardId) {
+    public ResponseEntity<ApiResponse> read(@PathVariable("id") Long boardId,
+                                            Authentication authentication) {
         log.info("readController() ---");
+        System.out.println(authentication.getAuthorities());
         return ResponseEntity.ok(ApiResponse.success(boardService.read(boardId)));
     }
 
@@ -71,8 +74,17 @@ public class BoardController {
     public ResponseEntity<ApiResponse> update(
             @PathVariable("id") Long boardId,
             @RequestPart("request") @Valid final BoardUpdateRequest request,
-            @RequestPart("image") final MultipartFile multipartFile
+            @RequestPart("image") final MultipartFile multipartFile,
+            Authentication authentication //사용자의 인증 상태와 관련된 정보를 나타냄
     ) {
+        log.info("authentication.getName : " + authentication.getName());
+        log.info("authentication.getPrincipal : " + authentication.getPrincipal());
+        log.info("boardService.read(boardId) -> " + boardService.read(boardId));
+
+        //게시글의 작성자와 현재 접속한 유저가 같지 않으면 예외 처리
+        if (!authentication.getName().equals(boardService.read(boardId).getMember()))
+            throw new IllegalArgumentException("No Authenticated User");
+
         BoardEntity board = boardService.update(boardId, request, multipartFile);
         BoardUpdateResponse response = BoardUpdateResponse.from(board);
         return ResponseEntity.ok(ApiResponse.success(response));
@@ -83,8 +95,13 @@ public class BoardController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> delete(
-            @PathVariable("id") Long boardId
+            @PathVariable("id") Long boardId,
+            Authentication authentication
     ) {
+        //게시글의 작성자와 현재 접속한 유저가 같지 않으면 예외 처리
+        if (!authentication.getName().equals(boardService.read(boardId).getMember()))
+            throw new IllegalArgumentException("No Authenticated User");
+
         BoardEntity board = boardService.delete(boardId);
         BoardDeleteResponse response = BoardDeleteResponse.from(board);
         return ResponseEntity.ok(ApiResponse.success(response));
