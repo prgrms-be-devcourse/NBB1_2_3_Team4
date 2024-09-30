@@ -14,13 +14,13 @@ public class CommentDTO {
 
     private Long id;
     private Long boardId;
-    private Long memberId;
+    private String memberId;
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     @Builder
-    public CommentDTO(Long id, Long boardId, Long memberId, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public CommentDTO(Long id, Long boardId, String memberId, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.boardId = boardId;
         this.memberId = memberId;
@@ -34,7 +34,7 @@ public class CommentDTO {
         return CommentDTO.builder()
                 .id(commentEntity.getId())
                 .boardId(commentEntity.getBoard().getId())
-                .memberId(commentEntity.getMember().getMemberNo())
+                .memberId(commentEntity.getMember().getUserId())
                 .content(commentEntity.getContent())
                 .createdAt(commentEntity.getCreatedAt())
                 .updatedAt(commentEntity.getUpdatedAt())

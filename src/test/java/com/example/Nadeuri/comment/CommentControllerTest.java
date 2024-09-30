@@ -39,7 +39,7 @@ class CommentControllerTest {
     @Test
     void 댓글_생성_테스트() {
         Long boardId = 1L;
-        Long memberId = 1L;
+        String memberId = "testUser";  // String 타입으로 변경
         CommentDTO commentDTO = CommentDTO.builder()
                 .boardId(boardId)
                 .memberId(memberId)
@@ -51,7 +51,7 @@ class CommentControllerTest {
                 .build();
 
         MemberEntity member = MemberEntity.builder()
-                .memberNo(memberId)
+                .userId(memberId)  // userId로 변경
                 .build();
 
         CommentEntity commentEntity = CommentEntity.builder()
@@ -62,7 +62,7 @@ class CommentControllerTest {
                 .build();
 
         when(boardRepository.findById(boardId)).thenReturn(Optional.of(board));
-        when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+        when(memberRepository.findByUserId(memberId)).thenReturn(Optional.of(member));  // findByUserId로 변경
         when(commentRepository.save(any(CommentEntity.class))).thenReturn(commentEntity);
 
         CommentDTO createdComment = commentService.createComment(commentDTO);
@@ -81,7 +81,7 @@ class CommentControllerTest {
                 .build();
 
         MemberEntity member = MemberEntity.builder()
-                .memberNo(1L)
+                .userId("testUser")
                 .build();
 
         CommentEntity comment1 = CommentEntity.builder()
@@ -110,10 +110,10 @@ class CommentControllerTest {
 
     @Test
     void 유저가_작성한_댓글_조회_테스트() {
-        Long memberId = 1L;
+        String memberId = "testUser";  // String 타입으로 변경
 
         MemberEntity member = MemberEntity.builder()
-                .memberNo(memberId)
+                .userId(memberId)
                 .build();
 
         BoardEntity board = BoardEntity.builder()
@@ -134,7 +134,7 @@ class CommentControllerTest {
                 .content("유저의 두 번째 댓글")
                 .build();
 
-        when(commentRepository.findByMember_MemberNo(memberId)).thenReturn(Arrays.asList(comment1, comment2));
+        when(commentRepository.findByMember_UserId(memberId)).thenReturn(Arrays.asList(comment1, comment2));  // findByUserId로 변경
 
         List<CommentDTO> comments = commentService.readMemberId(memberId);
 
@@ -142,18 +142,18 @@ class CommentControllerTest {
         assertEquals(2, comments.size());
         assertEquals("유저의 첫 번째 댓글", comments.get(0).getContent());
         assertEquals("유저의 두 번째 댓글", comments.get(1).getContent());
-        verify(commentRepository, times(1)).findByMember_MemberNo(memberId);
+        verify(commentRepository, times(1)).findByMember_UserId(memberId);
     }
 
     // 댓글 수정 테스트
     @Test
     void 댓글_수정_테스트() {
         Long commentId = 1L;
-        Long memberId = 1L;
+        String memberId = "testUser";  // String 타입으로 변경
         String updatedContent = "수정된 댓글";
 
         MemberEntity member = MemberEntity.builder()
-                .memberNo(memberId)
+                .userId(memberId)
                 .build();
 
         BoardEntity board = BoardEntity.builder()
@@ -179,10 +179,10 @@ class CommentControllerTest {
     @Test
     void 댓글_삭제_테스트() {
         Long commentId = 1L;
-        Long memberId = 1L;
+        String memberId = "testUser";  // String 타입으로 변경
 
         MemberEntity member = MemberEntity.builder()
-                .memberNo(memberId)
+                .userId(memberId)
                 .build();
 
         CommentEntity comment = CommentEntity.builder()
