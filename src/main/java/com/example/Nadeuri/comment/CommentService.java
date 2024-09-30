@@ -2,8 +2,10 @@ package com.example.Nadeuri.comment;
 
 import com.example.Nadeuri.board.BoardEntity;
 import com.example.Nadeuri.board.BoardRepository;
+import com.example.Nadeuri.comment.exception.CommentException;
 import com.example.Nadeuri.member.MemberEntity;
 import com.example.Nadeuri.member.MemberRepository;
+import com.example.Nadeuri.member.exception.MemberException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,10 +29,10 @@ public class CommentService {
     @Transactional
     public CommentDTO createComment(CommentDTO commentDTO) {
         BoardEntity board = boardRepository.findById(commentDTO.getBoardId())
-                .orElseThrow(() -> new IllegalArgumentException("게시판을 찾을 수 없습니다. ID: " + commentDTO.getBoardId()));
+                .orElseThrow(CommentException.NOT_FOUND::get);
 
         MemberEntity member = memberRepository.findByUserId(commentDTO.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다. User ID: " + commentDTO.getMemberId()));
+                .orElseThrow(MemberException.NOT_FOUND::get);
 
         CommentEntity comment = CommentDTO.toEntity(commentDTO, board, member);
         comment = commentRepository.save(comment);
@@ -83,17 +85,17 @@ public class CommentService {
     // 댓글 작성자 검증하는 메서드 - Controller
     public boolean checkOwner(Long commentId, String username) {
         CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다. ID: " + commentId));
+                .orElseThrow(CommentException.NOT_FOUND::get);
         return comment.getMember().getUserId().equals(username);
     }
 
     // 댓글 작성자 검증하는 메서드 - Service
     private CommentEntity check(Long commentId, String userId) {
         CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다. ID: " + commentId));
+                .orElseThrow(CommentException.NOT_FOUND::get);
 
         if (!comment.getMember().getUserId().equals(userId)) {
-            throw new IllegalArgumentException("이 댓글에 대한 권한이 없습니다. ID: " + commentId);
+            throw CommentException.NOT_MATCHED_USER.get();
         }
 
         return comment;

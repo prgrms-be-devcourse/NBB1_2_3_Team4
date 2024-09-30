@@ -39,7 +39,7 @@ public class BoardService {
      */
     @Transactional
     public void register(final BoardCreateRequest request, final MultipartFile boardImage) {
-        try {
+
             String imageUrl;
 
             if (boardImage == null || boardImage.isEmpty()) {
@@ -49,7 +49,7 @@ public class BoardService {
             }
 
             MemberEntity memberEntity = retrieveMember(request.getMemberId());
-
+    try {
             BoardEntity board = BoardEntity.create(
                     memberEntity,
                     request.getBoardTitle(),
