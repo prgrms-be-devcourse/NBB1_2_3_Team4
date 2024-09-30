@@ -1,6 +1,7 @@
 package com.example.Nadeuri.member.dto.request;
 
 import com.example.Nadeuri.member.MemberEntity;
+import com.example.Nadeuri.member.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class SignupDTO {
     private String imageUrl;
     private String birthDate;
 
-    public MemberEntity toEntity(String encodedPassword, String role, String imageUrl) {
+    public MemberEntity toEntity(String encodedPassword, Role role, String imageUrl) {
 
         return MemberEntity.builder()
                 .userId(userId)
@@ -29,7 +30,7 @@ public class SignupDTO {
                 .password(encodedPassword)
                 .nickname(nickname)
                 .profileImage(imageUrl)
-                .role(role)
+                .role(role) //등록시에 USER로 자동설정
                 .build();
     }
 }

@@ -5,6 +5,7 @@ import com.example.Nadeuri.comment.CommentEntity;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import lombok.*;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
 
@@ -26,14 +27,15 @@ public class MemberEntity {
     private String userId;
     private String email;
     private String password;
-    private String role;
     private String birthDate;
     private String name;
     private String profileImage;
     private String nickname;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Builder //빌더 추가
-    public MemberEntity(String userId, String email, String password, String role, String birthDate, String name, String profileImage, String nickname) {
+    public MemberEntity(String userId, String email, String password, Role role, String birthDate, String name, String profileImage, String nickname) {
         this.userId = userId;
         this.email = email;
         this.password = password;
@@ -62,7 +64,9 @@ public class MemberEntity {
 
     public void changeName(String name) {this.name = name;}
 
-    public void changeRole(String role) {this.role = role;}
+    public void changeRole(Role role) {
+        this.role = role;
+    }
 
 
 }

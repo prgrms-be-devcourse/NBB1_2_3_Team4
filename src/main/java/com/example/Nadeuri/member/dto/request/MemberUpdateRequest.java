@@ -1,5 +1,6 @@
 package com.example.Nadeuri.member.dto.request;
 
+import com.example.Nadeuri.member.Role;
 import lombok.Getter;
 
 @Getter
@@ -7,7 +8,7 @@ public class MemberUpdateRequest {
     private String password;
     private String name;
     private String email;
-    private String role;
+    private Role role;
     private String nickname;
     private String profileImage;
 

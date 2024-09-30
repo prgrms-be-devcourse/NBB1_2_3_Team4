@@ -3,6 +3,7 @@ package com.example.Nadeuri.memberRepository;
 
 import com.example.Nadeuri.member.MemberEntity;
 import com.example.Nadeuri.member.MemberRepository;
+import com.example.Nadeuri.member.Role;
 import com.example.Nadeuri.member.exception.MemberException;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ public class MemberRepositoryTests {
             MemberEntity member = MemberEntity.builder().userId("user" + i)
                     .password(passwordEncoder.encode("1111"))
                     .email("user" + i + "@aaa.com")
-                    .role(i <= 80 ? "USER" : "ADMIN")
+                    .role(i <= 80 ? Role.USER : Role.ADMIN)
                     .build();
 
             //WHEN - 엔티티 저장 => saved 메서드가 insert쿼리 역할
@@ -72,13 +73,14 @@ public class MemberRepositoryTests {
     public void testUpdate() {
         //GIVEN  //@Id 타입의 값으로 엔티티 조회
         String userId = "user3";
+        Role role = Role.ADMIN;
         //WHEN
         //사용자를 데이터베이스에서 조회
         Optional<MemberEntity> foundMember = memberRepository.findByUserId(userId);
         //조회 결과가 없으면 MemberTaskException으로 NOT_FOUND 예외를 발생시키고
         foundMember.orElseThrow(MemberException.NOT_FOUND::get);
 
-        foundMember.get().changeRole("ADMIN");
+        foundMember.get().changeRole(role);
 
         assertEquals("ADMIN", foundMember.get().getRole());
 //        assertEquals("2222", passwordEncoder.encode(foundMember.get().getMpw()));

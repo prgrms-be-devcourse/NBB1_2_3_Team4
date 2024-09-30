@@ -2,6 +2,7 @@ package com.example.Nadeuri.member.dto;
 
 
 import com.example.Nadeuri.member.MemberEntity;
+import com.example.Nadeuri.member.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +20,7 @@ public class MemberDTO {
     private String password;
     private String name;
     private String email;
-    private String role;
+    private Role role;
     private String nickname;
     private String profileImage;
     private String birthDate;
