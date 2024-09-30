@@ -110,7 +110,7 @@ public class BoardService {
                 : uploadPath + "/defaultImage.png";
 
         boardEntity.update(
-                memberEntity, // 멤버 엔티티를 업데이트하면 작성자가 바뀜
+                memberEntity,
                 request.getBoardTitle(),
                 request.getBoardContent(),
                 request.getCategory(),

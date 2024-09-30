@@ -77,10 +77,6 @@ public class BoardController {
             @RequestPart("image") final MultipartFile multipartFile,
             Authentication authentication //사용자의 인증 상태와 관련된 정보를 나타냄
     ) {
-        log.info("authentication.getName : " + authentication.getName());
-        log.info("authentication.getPrincipal : " + authentication.getPrincipal());
-        log.info("boardService.read(boardId) -> " + boardService.read(boardId));
-
         //게시글의 작성자와 현재 접속한 유저가 같지 않으면 예외 처리
         if (!authentication.getName().equals(boardService.read(boardId).getMember()))
             throw new IllegalArgumentException("No Authenticated User");
