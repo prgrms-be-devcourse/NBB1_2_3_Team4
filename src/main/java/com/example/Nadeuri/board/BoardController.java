@@ -5,6 +5,7 @@ import com.example.Nadeuri.board.dto.request.BoardPageRequestDTO;
 import com.example.Nadeuri.board.dto.request.BoardUpdateRequest;
 import com.example.Nadeuri.board.dto.response.BoardDeleteResponse;
 import com.example.Nadeuri.board.dto.response.BoardUpdateResponse;
+import com.example.Nadeuri.board.exception.BoardException;
 import com.example.Nadeuri.common.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,6 @@ public class BoardController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> read(@PathVariable("id") Long boardId,
                                             Authentication authentication) {
-        log.info("readController() ---");
         System.out.println(authentication.getAuthorities());
         return ResponseEntity.ok(ApiResponse.success(boardService.read(boardId)));
     }
@@ -54,7 +54,6 @@ public class BoardController {
     //게시글 전체 조회  --
     @GetMapping
     public ResponseEntity<ApiResponse> page(@Validated BoardPageRequestDTO boardPageRequestDTO) {
-        log.info("pageController()---");
         return ResponseEntity.ok(ApiResponse.success(boardService.page(boardPageRequestDTO)));
     }
 
@@ -62,7 +61,6 @@ public class BoardController {
     @GetMapping("/search/{keyword}")
     public ResponseEntity<ApiResponse> pageSearch(@PathVariable("keyword") String keyword,
                                                   @Validated BoardPageRequestDTO boardPageRequestDTO) {
-        log.info("pageSearchController()---");
         return ResponseEntity.ok(ApiResponse.success(boardService.pageSearch(keyword,
                 boardPageRequestDTO)));
     }
@@ -79,7 +77,7 @@ public class BoardController {
     ) {
         //게시글의 작성자와 현재 접속한 유저가 같지 않으면 예외 처리
         if (!authentication.getName().equals(boardService.read(boardId).getMember()))
-            throw new IllegalArgumentException("No Authenticated User");
+            throw BoardException.NOT_MATCHED_USER.get();
 
         BoardEntity board = boardService.update(boardId, request, multipartFile);
         BoardUpdateResponse response = BoardUpdateResponse.from(board);
@@ -96,7 +94,7 @@ public class BoardController {
     ) {
         //게시글의 작성자와 현재 접속한 유저가 같지 않으면 예외 처리
         if (!authentication.getName().equals(boardService.read(boardId).getMember()))
-            throw new IllegalArgumentException("No Authenticated User");
+            throw BoardException.NOT_MATCHED_USER.get();
 
         BoardEntity board = boardService.delete(boardId);
         BoardDeleteResponse response = BoardDeleteResponse.from(board);
