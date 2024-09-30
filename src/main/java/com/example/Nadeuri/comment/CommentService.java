@@ -29,8 +29,8 @@ public class CommentService {
         BoardEntity board = boardRepository.findById(commentDTO.getBoardId())
                 .orElseThrow(() -> new IllegalArgumentException("게시판을 찾을 수 없습니다. ID: " + commentDTO.getBoardId()));
 
-        MemberEntity member = memberRepository.findById(commentDTO.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다. ID: " + commentDTO.getMemberId()));
+        MemberEntity member = memberRepository.findByUserId(commentDTO.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다. User ID: " + commentDTO.getMemberId()));
 
         CommentEntity comment = CommentDTO.toEntity(commentDTO, board, member);
         comment = commentRepository.save(comment);
@@ -53,8 +53,8 @@ public class CommentService {
 
     // 유저가 작성한 모든 댓글 조회
     @Transactional(readOnly = true)
-    public List<CommentDTO> readMemberId(Long memberId) {
-        List<CommentEntity> comments = commentRepository.findByMember_MemberNo(memberId);
+    public List<CommentDTO> readMemberId(String userId) {
+        List<CommentEntity> comments = commentRepository.findByMember_UserId(userId);
         List<CommentDTO> commentDTOs = new ArrayList<>();
 
         for (CommentEntity comment : comments) {
@@ -66,8 +66,8 @@ public class CommentService {
 
     // 댓글 수정
     @Transactional
-    public CommentDTO updateComment(Long commentId, String content, Long memberId) {
-        CommentEntity comment = check(commentId, memberId);
+    public CommentDTO updateComment(Long commentId, String content, String userId) {
+        CommentEntity comment = check(commentId, userId);
         comment.updateContent(content);
 
         return CommentDTO.fromEntity(comment);
@@ -75,8 +75,8 @@ public class CommentService {
 
     // 댓글 삭제
     @Transactional
-    public void deleteComment(Long commentId, Long memberId) {
-        CommentEntity comment = check(commentId, memberId);
+    public void deleteComment(Long commentId, String userId) {
+        CommentEntity comment = check(commentId, userId);
         commentRepository.delete(comment);
     }
 
@@ -84,15 +84,15 @@ public class CommentService {
     public boolean checkOwner(Long commentId, String username) {
         CommentEntity comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다. ID: " + commentId));
-        return comment.getMember().getMemberNo().toString().equals(username);
+        return comment.getMember().getUserId().equals(username);
     }
 
     // 댓글 작성자 검증하는 메서드 - Service
-    private CommentEntity check(Long commentId, Long memberId) {
+    private CommentEntity check(Long commentId, String userId) {
         CommentEntity comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다. ID: " + commentId));
 
-        if (!comment.getMember().getMemberNo().equals(memberId)) {
+        if (!comment.getMember().getUserId().equals(userId)) {
             throw new IllegalArgumentException("이 댓글에 대한 권한이 없습니다. ID: " + commentId);
         }
 
