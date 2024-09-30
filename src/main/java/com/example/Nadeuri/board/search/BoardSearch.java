@@ -8,8 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface BoardSearch {
-    Page<BoardEntity> page(Pageable pageable);
     Page<BoardDTO> pageDTO(Pageable pageable);
-
     Page<BoardDTO> pageSearch(String keyword, Pageable pageable);
+    Page<BoardDTO> pageFindBoardIsNotNull(Pageable pageable); //삭제한 게시물 페이지
 }
