@@ -2,6 +2,7 @@ package com.example.Nadeuri.member.dto.request;
 
 import com.example.Nadeuri.member.MemberEntity;
 import com.example.Nadeuri.member.Role;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,13 +13,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class SignupDTO {
+    @NotBlank
     private String userId;
+    @NotBlank
     private String password;
+    @NotBlank
     private String name;
+    @NotBlank
     private String email;
+    @NotBlank
     private String nickname;
-    private String imageUrl;
+    @NotBlank
     private String birthDate;
+
+    private String imageUrl;
+
+
 
     public MemberEntity toEntity(String encodedPassword, Role role, String imageUrl) {
 
