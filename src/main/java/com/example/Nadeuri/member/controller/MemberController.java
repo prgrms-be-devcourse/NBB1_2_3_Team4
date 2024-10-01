@@ -30,6 +30,8 @@ public class MemberController {
     private final PasswordEncoder passwordEncoder;
     private final JWTUtil jwtUtil;
 
+    //마무리되면 DTO들에 @Validated 어노테이션 추가 필요
+
     @PostMapping("/sign-up") //회원가입
     public ResponseEntity<ApiResponse> signUp(@RequestPart("signUpDTO") SignupDTO signUpDTO, @RequestPart(value = "image", required = false) final MultipartFile profileImage) {
          memberService.signUp(signUpDTO, profileImage);

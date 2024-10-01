@@ -20,17 +20,23 @@ import java.util.List;
 public class MemberEntity {
 
     @Id
-    @Column(name = "member_no")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberNo;
 
+//    @Column(nullable = false)  //간단하게 테스트 해보실 분들을 위해 주석처리 해놓았습니다.
     private String userId;
-    private String email;
+//    @Column(nullable = false)
     private String password;
+//    @Column(nullable = false)
+    private String email;
+//    @Column(nullable = false)
     private String birthDate;
+//    @Column(nullable = false)
     private String name;
-    private String profileImage;
+//    @Column(nullable = false)
     private String nickname;
+    private String profileImage;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
