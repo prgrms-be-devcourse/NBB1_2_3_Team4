@@ -4,7 +4,6 @@ import com.example.Nadeuri.board.ImageRepository;
 import com.example.Nadeuri.member.dto.MemberDTO;
 import com.example.Nadeuri.member.dto.request.MemberUpdateRequest;
 import com.example.Nadeuri.member.dto.request.SignupDTO;
-import com.example.Nadeuri.member.exception.DuplicateMemberException;
 import com.example.Nadeuri.member.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,8 +50,10 @@ public class MemberService {
     //회원 가입
     public void signUp(SignupDTO signupDTO, final MultipartFile profileImage) {
         if (memberRepository.existsByUserId(signupDTO.getUserId())) {
-            throw new DuplicateMemberException("이미 사용 중인 사용자 이름입니다.");
+            throw MemberException.DUPLICATE.get();
+//            throw new DuplicateMemberException("이미 사용 중인 사용자 이름입니다.");
         }
+
         String imageUrl;
 
         if (profileImage == null || profileImage.isEmpty()) {
