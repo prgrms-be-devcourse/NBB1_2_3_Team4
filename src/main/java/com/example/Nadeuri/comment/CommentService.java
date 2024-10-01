@@ -2,8 +2,10 @@ package com.example.Nadeuri.comment;
 
 import com.example.Nadeuri.board.BoardEntity;
 import com.example.Nadeuri.board.BoardRepository;
+import com.example.Nadeuri.comment.exception.CommentException;
 import com.example.Nadeuri.member.MemberEntity;
 import com.example.Nadeuri.member.MemberRepository;
+import com.example.Nadeuri.member.exception.MemberException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,10 +29,10 @@ public class CommentService {
     @Transactional
     public CommentDTO createComment(CommentDTO commentDTO) {
         BoardEntity board = boardRepository.findById(commentDTO.getBoardId())
-                .orElseThrow(() -> new IllegalArgumentException("게시판을 찾을 수 없습니다. ID: " + commentDTO.getBoardId()));
+                .orElseThrow(CommentException.NOT_FOUND::get);
 
-        MemberEntity member = memberRepository.findById(commentDTO.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다. ID: " + commentDTO.getMemberId()));
+        MemberEntity member = memberRepository.findByUserId(commentDTO.getMemberId())
+                .orElseThrow(MemberException.NOT_FOUND::get);
 
         CommentEntity comment = CommentDTO.toEntity(commentDTO, board, member);
         comment = commentRepository.save(comment);
@@ -53,8 +55,8 @@ public class CommentService {
 
     // 유저가 작성한 모든 댓글 조회
     @Transactional(readOnly = true)
-    public List<CommentDTO> readMemberId(Long memberId) {
-        List<CommentEntity> comments = commentRepository.findByMember_MemberNo(memberId);
+    public List<CommentDTO> readMemberId(String userId) {
+        List<CommentEntity> comments = commentRepository.findByMember_UserId(userId);
         List<CommentDTO> commentDTOs = new ArrayList<>();
 
         for (CommentEntity comment : comments) {
@@ -66,8 +68,8 @@ public class CommentService {
 
     // 댓글 수정
     @Transactional
-    public CommentDTO updateComment(Long commentId, String content, Long memberId) {
-        CommentEntity comment = check(commentId, memberId);
+    public CommentDTO updateComment(Long commentId, String content, String userId) {
+        CommentEntity comment = check(commentId, userId);
         comment.updateContent(content);
 
         return CommentDTO.fromEntity(comment);
@@ -75,25 +77,25 @@ public class CommentService {
 
     // 댓글 삭제
     @Transactional
-    public void deleteComment(Long commentId, Long memberId) {
-        CommentEntity comment = check(commentId, memberId);
+    public void deleteComment(Long commentId, String userId) {
+        CommentEntity comment = check(commentId, userId);
         commentRepository.delete(comment);
     }
 
     // 댓글 작성자 검증하는 메서드 - Controller
     public boolean checkOwner(Long commentId, String username) {
         CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다. ID: " + commentId));
-        return comment.getMember().getMemberNo().toString().equals(username);
+                .orElseThrow(CommentException.NOT_FOUND::get);
+        return comment.getMember().getUserId().equals(username);
     }
 
     // 댓글 작성자 검증하는 메서드 - Service
-    private CommentEntity check(Long commentId, Long memberId) {
+    private CommentEntity check(Long commentId, String userId) {
         CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다. ID: " + commentId));
+                .orElseThrow(CommentException.NOT_FOUND::get);
 
-        if (!comment.getMember().getMemberNo().equals(memberId)) {
-            throw new IllegalArgumentException("이 댓글에 대한 권한이 없습니다. ID: " + commentId);
+        if (!comment.getMember().getUserId().equals(userId)) {
+            throw CommentException.NOT_MATCHED_USER.get();
         }
 
         return comment;

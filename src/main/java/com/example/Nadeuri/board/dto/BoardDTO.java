@@ -6,6 +6,7 @@ import com.example.Nadeuri.comment.CommentEntity;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter // data에서 getter로 수정
+@ToString //테스트 목적으로 추가
 @NoArgsConstructor
 public class BoardDTO {
 
