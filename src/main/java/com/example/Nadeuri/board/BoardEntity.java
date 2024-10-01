@@ -2,7 +2,20 @@ package com.example.Nadeuri.board;
 
 import com.example.Nadeuri.comment.CommentEntity;
 import com.example.Nadeuri.member.MemberEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,6 +55,9 @@ public class BoardEntity {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "like_count")
+    private Integer likeCount = 0;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -55,7 +71,6 @@ public class BoardEntity {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true) // 테이블 이름을 맵핑
     private List<CommentEntity> comments;  //한 게시물의 여러 댓글을 보여줌
-
 
 
     @Builder
@@ -115,5 +130,9 @@ public class BoardEntity {
 
     public void recordDeletion(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount++;
     }
 }
