@@ -15,7 +15,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
@@ -43,12 +42,8 @@ public class LikeEntity {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "deleted_at")
-    protected LocalDateTime deletedAt;
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 
     @Builder
     public LikeEntity(
@@ -56,15 +51,13 @@ public class LikeEntity {
             final MemberEntity member,
             final BoardEntity board,
             final LocalDateTime createdAt,
-            final LocalDateTime updatedAt,
-            final LocalDateTime deletedAt
+            final Boolean isDeleted
     ) {
         this.id = id;
         this.member = member;
         this.board = board;
         this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.deletedAt = deletedAt;
+        this.isDeleted = isDeleted;
     }
 
     public static LikeEntity create(
@@ -74,9 +67,12 @@ public class LikeEntity {
         return LikeEntity.builder()
                 .member(member)
                 .board(board)
+                .isDeleted(false)
                 .build();
     }
-    public void recordDeletion(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
+
+    public void setLikeDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
+
 }

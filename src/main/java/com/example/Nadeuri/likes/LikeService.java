@@ -10,7 +10,6 @@ import com.example.Nadeuri.member.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
@@ -29,10 +28,8 @@ public class LikeService {
         BoardEntity board = retrieveBoard(boardId);
         MemberEntity member = retrieveMember(userId);
 
-        if (!hasMemberLikedBoard(member, board)) {
-            board.increaseLikeCount();
-            likeRepository.save(LikeEntity.create(member, board));
-        }
+        handleLike(member, board);
+        board.increaseLikeCount();
     }
 
     /**
@@ -45,7 +42,7 @@ public class LikeService {
 
         return findLikeByMemberAndBoard(member, board)
                 .map(like -> {
-                    like.recordDeletion(LocalDateTime.now());
+                    like.setLikeDeleted(true);
                     board.decreaseLikeCount();
                     return like;
                 })
@@ -62,10 +59,29 @@ public class LikeService {
                 .orElseThrow(MemberException.NOT_FOUND::get);
     }
 
+    private void handleLike(MemberEntity member, BoardEntity board) {
+        Optional<LikeEntity> existingLike = findLikeByMemberAndBoard(member, board);
+
+        if (existingLike.isPresent()) {
+            restoreLike(existingLike.get());
+        } else {
+            createNewLike(member, board);
+        }
+    }
+
+    private void restoreLike(LikeEntity like) {
+        if (like.isDeleted()) {
+            like.setLikeDeleted(false);
+            likeRepository.save(like);
+        }
+    }
+
+    private void createNewLike(MemberEntity member, BoardEntity board) {
+        LikeEntity newLike = LikeEntity.create(member, board);
+        likeRepository.save(newLike);
+    }
+
     private Optional<LikeEntity> findLikeByMemberAndBoard(MemberEntity member, BoardEntity board) {
         return likeRepository.findByMemberAndBoard(member, board);
-    }
-    private boolean hasMemberLikedBoard(MemberEntity member, BoardEntity board) {
-        return findLikeByMemberAndBoard(member, board).isPresent();
     }
 }
