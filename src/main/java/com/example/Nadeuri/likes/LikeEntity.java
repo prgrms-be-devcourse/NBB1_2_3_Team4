@@ -76,4 +76,7 @@ public class LikeEntity {
                 .board(board)
                 .build();
     }
+    public void recordDeletion(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
 }
