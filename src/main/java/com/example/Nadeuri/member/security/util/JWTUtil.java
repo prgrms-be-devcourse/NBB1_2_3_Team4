@@ -1,7 +1,10 @@
 package com.example.Nadeuri.member.security.util;
 
+import com.example.Nadeuri.member.MemberEntity;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -16,8 +19,10 @@ import java.util.Map;
 @Log4j2
 public class JWTUtil {
     private static String key//서명에 사용할 키 - 30자 이상으로
-            = "1234567890123456789012345678901234567890";
+            = "12345678901234567890123456789012345678901234567890";
     //JWT 문자열 생성                              //저장 문자열, 만료 시간 - 분 단위
+
+
     public String createToken(Map<String, Object> valueMap,
                               int min) {
         SecretKey key = null;
@@ -56,5 +61,24 @@ public class JWTUtil {
         log.info("--- claim " + claims);
 
         return claims;
+    }
+
+
+    public String generateToken(MemberEntity user, Duration expiredAt) {
+        Date now = new Date();
+        return makeToken(new Date(now.getTime() + expiredAt.toMillis()), user);
+    }
+
+    private String makeToken(Date expiry, MemberEntity user) {
+        Date now = new Date();
+
+        return Jwts.builder()
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .setSubject(user.getEmail())
+                .claim("id", user.getUserId())
+                .signWith(SignatureAlgorithm.HS256, key)
+                .compact();
     }
 }
