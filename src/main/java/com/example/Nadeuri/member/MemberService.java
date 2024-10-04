@@ -110,6 +110,10 @@ public class MemberService {
 
     }
 
-
+    public MemberEntity findByEmail(String email) {
+        MemberEntity member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
+        return member; // MemberEntity를 MemberDTO로 변환하여 반환
+    }
 
 }
