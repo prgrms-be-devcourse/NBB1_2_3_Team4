@@ -10,6 +10,9 @@
 <div class="container mt-5">
     <h2>회원정보 수정</h2>
     <form th:action="@{/members/{userId}(userId=${member.userId})}" method="post" enctype="multipart/form-data">
+        <!-- 숨겨진 필드로 PUT 메서드 처리 -->
+        <input type="hidden" name="_method" value="put" />
+
         <!-- 비밀번호 수정 -->
         <div class="form-group">
             <label for="password">비밀번호</label>
