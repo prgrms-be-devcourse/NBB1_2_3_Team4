@@ -126,4 +126,14 @@ public class CommentService {
 
         return comment;
     }
+
+    // 댓글 작성자 검증 - boolean
+    public boolean checkOwner(Long commentId, String userId) {
+        CommentEntity comment = commentRepository.findById(commentId)
+                .orElseThrow(CommentException.NOT_FOUND::get);
+
+        // 댓글 작성자가 현재 사용자와 일치하는지 확인
+        return comment.getMember().getUserId().equals(userId);
+    }
+
 }
