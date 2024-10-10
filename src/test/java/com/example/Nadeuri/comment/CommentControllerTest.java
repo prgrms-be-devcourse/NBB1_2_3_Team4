@@ -91,13 +91,13 @@ class CommentControllerTest {
                 .content("첫 번째 댓글")
                 .build();
 
-        when(commentRepository.Board_Id(boardId)).thenReturn(Arrays.asList(comment1));
+        when(commentRepository.findByBoardId(boardId)).thenReturn(Arrays.asList(comment1));
 
         List<CommentDTO> comments = commentService.readBoardId(boardId);
 
         assertEquals(1, comments.size());
         assertEquals("첫 번째 댓글", comments.get(0).getContent());
-        verify(commentRepository, times(1)).Board_Id(boardId);
+        verify(commentRepository, times(1)).findByBoardId(boardId);
     }
 
     @Test
@@ -240,7 +240,7 @@ class CommentControllerTest {
                 .build();
 
         // Mock 설정 - 부모 댓글과 답글을 반환
-        when(commentRepository.Board_Id(boardId)).thenReturn(Arrays.asList(parentComment));
+        when(commentRepository.findByBoardId(boardId)).thenReturn(Arrays.asList(parentComment));
 
         // 댓글 및 답글 조회
         List<CommentDTO> comments = commentService.readBoardId(boardId);
@@ -250,7 +250,7 @@ class CommentControllerTest {
         assertEquals(1, comments.get(0).getReplies().size());  // 답글 개수 확인
         assertEquals("답글 내용", comments.get(0).getReplies().get(0).getContent());
 
-        verify(commentRepository, times(1)).Board_Id(boardId);
+        verify(commentRepository, times(1)).findByBoardId(boardId);
     }
 
     @Test

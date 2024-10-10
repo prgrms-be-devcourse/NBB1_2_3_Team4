@@ -55,7 +55,7 @@ public class CommentService {
     // 게시글 ID로 댓글 조회
     @Transactional(readOnly = true)
     public List<CommentDTO> readBoardId(Long boardId) {
-        List<CommentEntity> parentComments = commentRepository.Board_Id(boardId);
+        List<CommentEntity> parentComments = commentRepository.findByBoardId(boardId);
         List<CommentDTO> commentDTOs = new ArrayList<>();
 
         for (CommentEntity parentComment : parentComments) {
@@ -89,7 +89,7 @@ public class CommentService {
     // 유저가 작성한 모든 댓글 조회
     @Transactional(readOnly = true)
     public List<CommentDTO> readMemberId(String userId) {
-        List<CommentEntity> comments = commentRepository.Member_UserId(userId);
+        List<CommentEntity> comments = commentRepository.findByMemberUserId(userId);
         List<CommentDTO> commentDTOs = new ArrayList<>();
 
         for (CommentEntity comment : comments) {
