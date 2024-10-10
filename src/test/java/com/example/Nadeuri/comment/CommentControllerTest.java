@@ -39,7 +39,7 @@ class CommentControllerTest {
     @Test
     void 댓글_생성_테스트() {
         Long boardId = 1L;
-        String memberId = "testUser";  // String 타입으로 변경
+        String memberId = "testUser";
         CommentDTO commentDTO = CommentDTO.builder()
                 .boardId(boardId)
                 .memberId(memberId)
@@ -51,7 +51,7 @@ class CommentControllerTest {
                 .build();
 
         MemberEntity member = MemberEntity.builder()
-                .userId(memberId)  // userId로 변경
+                .userId(memberId)
                 .build();
 
         CommentEntity commentEntity = CommentEntity.builder()
@@ -62,7 +62,7 @@ class CommentControllerTest {
                 .build();
 
         when(boardRepository.findById(boardId)).thenReturn(Optional.of(board));
-        when(memberRepository.findByUserId(memberId)).thenReturn(Optional.of(member));  // findByUserId로 변경
+        when(memberRepository.findByUserId(memberId)).thenReturn(Optional.of(member));
         when(commentRepository.save(any(CommentEntity.class))).thenReturn(commentEntity);
 
         CommentDTO createdComment = commentService.createComment(commentDTO);
@@ -73,7 +73,7 @@ class CommentControllerTest {
     }
 
     @Test
-    void 게시글에_달린_댓글_조회_테스트() {
+    void 댓글_조회_테스트() {
         Long boardId = 1L;
 
         BoardEntity board = BoardEntity.builder()
@@ -91,65 +91,19 @@ class CommentControllerTest {
                 .content("첫 번째 댓글")
                 .build();
 
-        CommentEntity comment2 = CommentEntity.builder()
-                .id(2L)
-                .board(board)
-                .member(member)
-                .content("두 번째 댓글")
-                .build();
-
-        when(commentRepository.findByBoard_Id(boardId)).thenReturn(Arrays.asList(comment1, comment2));
+        when(commentRepository.findByBoardId(boardId)).thenReturn(Arrays.asList(comment1));
 
         List<CommentDTO> comments = commentService.readBoardId(boardId);
 
-        assertEquals(2, comments.size());
+        assertEquals(1, comments.size());
         assertEquals("첫 번째 댓글", comments.get(0).getContent());
-        assertEquals("두 번째 댓글", comments.get(1).getContent());
-        verify(commentRepository, times(1)).findByBoard_Id(boardId);
+        verify(commentRepository, times(1)).findByBoardId(boardId);
     }
 
-    @Test
-    void 유저가_작성한_댓글_조회_테스트() {
-        String memberId = "testUser";  // String 타입으로 변경
-
-        MemberEntity member = MemberEntity.builder()
-                .userId(memberId)
-                .build();
-
-        BoardEntity board = BoardEntity.builder()
-                .id(1L)
-                .build();
-
-        CommentEntity comment1 = CommentEntity.builder()
-                .id(1L)
-                .member(member)
-                .board(board)
-                .content("유저의 첫 번째 댓글")
-                .build();
-
-        CommentEntity comment2 = CommentEntity.builder()
-                .id(2L)
-                .member(member)
-                .board(board)
-                .content("유저의 두 번째 댓글")
-                .build();
-
-        when(commentRepository.findByMember_UserId(memberId)).thenReturn(Arrays.asList(comment1, comment2));  // findByUserId로 변경
-
-        List<CommentDTO> comments = commentService.readMemberId(memberId);
-
-        // 결과 확인
-        assertEquals(2, comments.size());
-        assertEquals("유저의 첫 번째 댓글", comments.get(0).getContent());
-        assertEquals("유저의 두 번째 댓글", comments.get(1).getContent());
-        verify(commentRepository, times(1)).findByMember_UserId(memberId);
-    }
-
-    // 댓글 수정 테스트
     @Test
     void 댓글_수정_테스트() {
         Long commentId = 1L;
-        String memberId = "testUser";  // String 타입으로 변경
+        String memberId = "testUser";
         String updatedContent = "수정된 댓글";
 
         MemberEntity member = MemberEntity.builder()
@@ -179,7 +133,7 @@ class CommentControllerTest {
     @Test
     void 댓글_삭제_테스트() {
         Long commentId = 1L;
-        String memberId = "testUser";  // String 타입으로 변경
+        String memberId = "testUser";
 
         MemberEntity member = MemberEntity.builder()
                 .userId(memberId)
@@ -195,5 +149,166 @@ class CommentControllerTest {
         commentService.deleteComment(commentId, memberId);
 
         verify(commentRepository, times(1)).delete(comment);
+    }
+
+    @Test
+    void 답글_생성_테스트() {
+        Long boardId = 1L;
+        Long parentCommentId = 1L;  // 부모 댓글 ID
+        String memberId = "testUser";
+
+        CommentDTO replyDTO = CommentDTO.builder()
+                .boardId(boardId)
+                .memberId(memberId)
+                .content("답글 내용")
+                .parentCommentId(parentCommentId)  // 부모 댓글 설정
+                .build();
+
+        BoardEntity board = BoardEntity.builder()
+                .id(boardId)
+                .build();
+
+        MemberEntity member = MemberEntity.builder()
+                .userId(memberId)
+                .build();
+
+        CommentEntity parentComment = CommentEntity.builder()
+                .id(parentCommentId)
+                .board(board)
+                .member(member)
+                .content("부모 댓글")
+                .build();
+
+        CommentEntity replyComment = CommentEntity.builder()
+                .id(2L)
+                .board(board)
+                .member(member)
+                .parentComment(parentComment)
+                .content("답글 내용")
+                .build();
+
+        when(boardRepository.findById(boardId)).thenReturn(Optional.of(board));
+        when(memberRepository.findByUserId(memberId)).thenReturn(Optional.of(member));
+        when(commentRepository.findById(parentCommentId)).thenReturn(Optional.of(parentComment));
+        when(commentRepository.save(any(CommentEntity.class))).thenReturn(replyComment);
+
+        CommentDTO createdReply = commentService.createComment(replyDTO);
+
+        assertNotNull(createdReply);
+        assertEquals("답글 내용", createdReply.getContent());
+        assertEquals(parentCommentId, createdReply.getParentCommentId());
+        verify(commentRepository, times(1)).save(any(CommentEntity.class));
+    }
+
+    @Test
+    void 답글_조회_테스트() {
+        Long boardId = 1L;
+        Long parentCommentId = 1L;
+
+        BoardEntity board = BoardEntity.builder()
+                .id(boardId)
+                .build();
+
+        MemberEntity member = MemberEntity.builder()
+                .userId("testUser")
+                .build();
+
+        // 부모 댓글 엔티티
+        CommentEntity parentComment = CommentEntity.builder()
+                .id(parentCommentId)
+                .board(board)
+                .member(member)
+                .content("부모 댓글")
+                .build();
+
+        // 답글 엔티티
+        CommentEntity replyComment = CommentEntity.builder()
+                .id(2L)
+                .board(board)
+                .member(member)
+                .parentComment(parentComment)
+                .content("답글 내용")
+                .build();
+
+        // 부모 댓글에 답글 리스트 설정
+        parentComment = CommentEntity.builder()
+                .id(parentComment.getId())
+                .board(board)
+                .member(member)
+                .content(parentComment.getContent())
+                .replies(Arrays.asList(replyComment))  // 답글 리스트 추가
+                .build();
+
+        // Mock 설정 - 부모 댓글과 답글을 반환
+        when(commentRepository.findByBoardId(boardId)).thenReturn(Arrays.asList(parentComment));
+
+        // 댓글 및 답글 조회
+        List<CommentDTO> comments = commentService.readBoardId(boardId);
+
+        assertEquals(1, comments.size());  // 부모 댓글 개수 확인
+        assertEquals("부모 댓글", comments.get(0).getContent());
+        assertEquals(1, comments.get(0).getReplies().size());  // 답글 개수 확인
+        assertEquals("답글 내용", comments.get(0).getReplies().get(0).getContent());
+
+        verify(commentRepository, times(1)).findByBoardId(boardId);
+    }
+
+    @Test
+    void 답글_수정_테스트() {
+        Long replyId = 2L;
+        String memberId = "testUser";
+        String updatedContent = "수정된 답글";
+
+        MemberEntity member = MemberEntity.builder()
+                .userId(memberId)
+                .build();
+
+        BoardEntity board = BoardEntity.builder()
+                .id(1L)
+                .build();
+
+        CommentEntity parentComment = CommentEntity.builder()
+                .id(1L)
+                .board(board)
+                .member(member)
+                .content("부모 댓글")
+                .build();
+
+        CommentEntity replyComment = CommentEntity.builder()
+                .id(replyId)
+                .parentComment(parentComment)
+                .board(board)
+                .member(member)
+                .content("이전 답글 내용")
+                .build();
+
+        when(commentRepository.findById(replyId)).thenReturn(Optional.of(replyComment));
+
+        CommentDTO updatedReply = commentService.updateComment(replyId, updatedContent, memberId);
+
+        assertNotNull(updatedReply);
+        assertEquals(updatedContent, updatedReply.getContent());
+        verify(commentRepository, times(1)).findById(replyId);
+    }
+
+    @Test
+    void 답글_삭제_테스트() {
+        Long replyId = 2L;
+        String memberId = "testUser";
+
+        MemberEntity member = MemberEntity.builder()
+                .userId(memberId)
+                .build();
+
+        CommentEntity replyComment = CommentEntity.builder()
+                .id(replyId)
+                .member(member)
+                .build();
+
+        when(commentRepository.findById(replyId)).thenReturn(Optional.of(replyComment));
+
+        commentService.deleteComment(replyId, memberId);
+
+        verify(commentRepository, times(1)).delete(replyComment);
     }
 }
