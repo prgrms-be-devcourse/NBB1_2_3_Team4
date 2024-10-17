@@ -62,7 +62,6 @@ public class BoardController {
         return ResponseEntity.ok(ApiResponse.success(boardService.pageSearch(keyword,
                 boardPageRequestDTO)));
     }
-
     /**
      * 게시판 수정
      */
