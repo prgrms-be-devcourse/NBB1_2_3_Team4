@@ -52,7 +52,6 @@ public class AdminService {
                 .orElseThrow(() -> new IllegalArgumentException("Account not found"));
         member.changeEmail(memberEntity.getEmail());
         member.changeNickname(memberEntity.getNickname());
-        member.changePassword(memberEntity.getPassword());
         member.changeRole(memberEntity.getRole());
         member.changeBirthDate(memberEntity.getBirthDate());
         if (!(memberEntity.getProfileImage() ==null))

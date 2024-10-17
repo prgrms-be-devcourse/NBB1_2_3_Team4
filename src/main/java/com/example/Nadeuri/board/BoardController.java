@@ -45,9 +45,7 @@ public class BoardController {
 
     //게시글 상세 조회 (1개 조회)
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse> read(@PathVariable("id") Long boardId,
-                                            Authentication authentication) {
-        System.out.println(authentication.getAuthorities());
+    public ResponseEntity<ApiResponse> read(@PathVariable("id") Long boardId) {
         return ResponseEntity.ok(ApiResponse.success(boardService.read(boardId)));
     }
 
