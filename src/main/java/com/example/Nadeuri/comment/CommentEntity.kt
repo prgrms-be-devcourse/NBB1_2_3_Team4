@@ -31,7 +31,7 @@ class CommentEntity @Builder constructor(
 
     @field:JoinColumn(name = "parent_comment_no")
     @field:ManyToOne(fetch = FetchType.LAZY)
-    private val parentComment: CommentEntity? = null, // nullable 처리
+    private var parentComment: CommentEntity? = null, // nullable 처리
 
     @field:OneToMany(mappedBy = "parentComment", cascade = [CascadeType.ALL], orphanRemoval = true)
     private val replies: MutableList<CommentEntity> = mutableListOf() // 기본값으로 빈 리스트
@@ -47,5 +47,17 @@ class CommentEntity @Builder constructor(
     // content 업데이트 메서드
     fun updateContent(content: String) {
         this.content = content
+    }
+
+    // 대댓글 추가
+    fun addReply(reply: CommentEntity) {
+        replies.add(reply)
+        reply.parentComment = this // 부모 댓글 설정
+    }
+
+    // 대댓글 제거
+    fun removeReply(reply: CommentEntity) {
+        replies.remove(reply)
+        reply.parentComment = null // 부모 댓글 설정 해제
     }
 }
