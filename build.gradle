@@ -1,9 +1,10 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.3.4'
-    id 'io.spring.dependency-management' version '1.1.6'
-    id 'org.jetbrains.kotlin.jvm'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.8.10' // all-open, no-arg 플러그인
+	id 'java'
+	id 'org.springframework.boot' version '3.3.4'
+	id 'io.spring.dependency-management' version '1.1.6'
+	id 'org.jetbrains.kotlin.jvm'
+	id 'org.jetbrains.kotlin.plugin.spring' version '1.8.10' // all-open, no-arg 플러그인
+	id "org.jetbrains.kotlin.plugin.jpa" version "1.9.25"
 }
 
 group = 'com.example'
@@ -32,6 +33,7 @@ dependencies {
 
     // 모델 맵퍼
     implementation "org.modelmapper:modelmapper:2.4.4"
+
 
     // Spring과 관련된 의존성
     implementation 'net.coobird:thumbnailator:0.4.20'

@@ -1,7 +1,6 @@
 package com.example.Nadeuri.member.config;
 
 import com.example.Nadeuri.member.MemberService;
-import com.example.Nadeuri.member.RefreshTokenRepository;
 import com.example.Nadeuri.member.security.filter.JWTCheckFilter;
 import com.example.Nadeuri.member.security.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +31,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final RefreshTokenRepository refreshTokenRepository;
     private final JWTUtil jwtUtil;
 
     private MemberService memberService;
