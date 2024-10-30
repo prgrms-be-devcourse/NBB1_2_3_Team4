@@ -2,9 +2,6 @@ package com.example.Nadeuri.member.config;
 
 import com.example.Nadeuri.member.MemberService;
 import com.example.Nadeuri.member.RefreshTokenRepository;
-import com.example.Nadeuri.member.config.oauth.OAuth2AuthorizationRequestBasedOnCookieRepository;
-import com.example.Nadeuri.member.config.oauth.OAuth2SuccessHandler;
-import com.example.Nadeuri.member.config.oauth.OAuth2UserCustomService;
 import com.example.Nadeuri.member.security.filter.JWTCheckFilter;
 import com.example.Nadeuri.member.security.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +32,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final OAuth2UserCustomService oAuth2UserCustomService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JWTUtil jwtUtil;
 
@@ -65,14 +61,6 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // OAuth2는 세션을 사용하지 않음
 
-                // OAuth2 관련 설정
-                .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/auth/login") // 로그인 페이지 경로 수정
-                        .authorizationEndpoint(authorization -> authorization
-                                .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository()))
-                        .successHandler(oAuth2SuccessHandler()) // 성공 시 JWT 발급 처리
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(oAuth2UserCustomService))) // OAuth2 유저 정보 처리
 
                 // 특정 API에 대한 인증 요구
                 .authorizeHttpRequests(authorize -> authorize
@@ -98,17 +86,6 @@ public class SecurityConfig {
                 });
 
         return http.build();
-    }
-
-    @Bean
-    public OAuth2SuccessHandler oAuth2SuccessHandler() {
-        return new OAuth2SuccessHandler(jwtUtil, refreshTokenRepository,
-                oAuth2AuthorizationRequestBasedOnCookieRepository(), memberService);
-    }
-
-    @Bean
-    public OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository() {
-        return new OAuth2AuthorizationRequestBasedOnCookieRepository();
     }
 
     // CORS 설정 관련 메서드
@@ -140,8 +117,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
