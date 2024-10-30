@@ -1,125 +1,102 @@
-package com.example.Nadeuri.member;
+package com.example.Nadeuri.member
 
-import com.example.Nadeuri.board.ImageRepository;
-import com.example.Nadeuri.member.dto.MemberDTO;
-import com.example.Nadeuri.member.dto.request.MemberUpdateRequest;
-import com.example.Nadeuri.member.dto.request.SignupDTO;
-import com.example.Nadeuri.member.exception.MemberException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Optional;
+import com.example.Nadeuri.board.ImageRepository
+import com.example.Nadeuri.member.dto.MemberDTO
+import com.example.Nadeuri.member.dto.request.MemberUpdateRequest
+import com.example.Nadeuri.member.dto.request.SignupDTO
+import com.example.Nadeuri.member.exception.MemberException
+import lombok.RequiredArgsConstructor
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
+import java.util.*
 
 @Service
 @RequiredArgsConstructor
-@Log4j2
 @Transactional
-public class MemberService {
-    private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final ImageRepository imageRepository;
+class MemberService(
+    private val memberRepository: MemberRepository,
+    private val passwordEncoder: PasswordEncoder,
+    private val imageRepository: ImageRepository,
+    @Value("\${file.local.upload.path}") private val uploadPath: String
+) {
 
-    @Value("${file.local.upload.path}")
-    private String uploadPath;
+    fun read(userId: String, password: String): MemberDTO {
+        val foundMember = memberRepository.findByUserId(userId)
+        val member = foundMember ?: throw MemberException.BAD_CREDENTIALS.get()
 
-    public MemberDTO read(String userId, String password) {
-        //userId와 password를 매개변수로 넘겨 받아 -------------------------------
-        Optional<MemberEntity> foundMember= memberRepository.findByUserId(userId);
-        MemberEntity member = foundMember.orElseThrow(MemberException.BAD_CREDENTIALS::get);  //데이터베이스에 존재하지 않는 경우 MemberTaskException의 BAD_CREDENTIALS 예외를 발생시키고
-
-        if(!passwordEncoder.matches(password, member.getPassword())) {   //password가 데이터베이스의 값과 일치하지 않는 경우
-            throw MemberException.BAD_CREDENTIALS.get();
+        if (!passwordEncoder.matches(password, member.password)) {
+            throw MemberException.BAD_CREDENTIALS.get() // 비밀번호가 일치하지 않는 경우 예외 발생
         }
 
-        return new MemberDTO(member);   //그렇지 않으면 넘겨받은 엔티티를 DTO 객체로 반환
+        return MemberDTO(member)
     }
 
-    public MemberDTO read(String userId) {
-        //userId를 매개변수로 넘겨 받아 -------------------------------
-        Optional<MemberEntity> foundMember= memberRepository.findByUserId(userId);
-        MemberEntity member = foundMember.orElseThrow(MemberException.BAD_CREDENTIALS::get);  //데이터베이스에 존재하지 않는 경우 MemberTaskException의 BAD_CREDENTIALS 예외를 발생시키고
+    fun read(userId: String): MemberDTO {
+        val foundMember = memberRepository.findByUserId(userId)
+        val member = foundMember ?: throw MemberException.BAD_CREDENTIALS.get()
 
-        return new MemberDTO(member);   //그렇지 않으면 넘겨받은 엔티티를 DTO 객체로 반환
+        return MemberDTO(member) // 엔티티를 DTO 객체로 반환
     }
 
-    //회원 가입
-    public void signUp(SignupDTO signupDTO, final MultipartFile profileImage) {
-        if (memberRepository.existsByUserId(signupDTO.getUserId())) {
-            throw MemberException.DUPLICATE.get();
-//            throw new DuplicateMemberException("이미 사용 중인 사용자 이름입니다.");
+    // 회원 가입
+    fun signUp(signupDTO: SignupDTO, profileImage: MultipartFile?) {
+        if (memberRepository.existsByUserId(signupDTO.userId)) {
+            throw MemberException.DUPLICATE.get()
         }
 
-        String imageUrl;
-
-        if (profileImage == null || profileImage.isEmpty()) {
-            imageUrl = uploadPath + "/defaultImage.png";
+        val imageUrl: String = if (profileImage == null || profileImage.isEmpty) {
+            "$uploadPath/defaultImage.png"
         } else {
-            imageUrl = imageRepository.upload(profileImage);
+            imageRepository.upload(profileImage)
         }
-        // Password 암호화
-        String encodedPassword = passwordEncoder.encode(signupDTO.getPassword());
-        Role role = Role.USER;
 
-        memberRepository.save(signupDTO.toEntity(encodedPassword, role, imageUrl));
+        // 비밀번호 암호화
+        val encodedPassword = passwordEncoder.encode(signupDTO.password)
+        val role = Role.USER
+
+        memberRepository.save(signupDTO.toEntity(encodedPassword, role, imageUrl))
     }
 
-    public void updateMember(String userId, MemberUpdateRequest request, MultipartFile profileImage) {
+    fun updateMember(userId: String, request: MemberUpdateRequest, profileImage: MultipartFile?) {
+        val memberEntity = memberRepository.findByUserId(userId)
+            ?: throw MemberException.NOT_FOUND.get()
 
-        MemberEntity memberEntity = memberRepository.findByUserId(userId)
-                .orElseThrow(() -> MemberException.NOT_FOUND.get());
-
-
-        String imageUrl = (profileImage != null && !profileImage.isEmpty())
-                ? imageRepository.upload(profileImage)
-                : uploadPath + "/defaultImage.png";
-
-        memberEntity.changeProfileImage(imageUrl);
-
-
-        if (request.getRole() != null) {
-            memberEntity.changeRole(request.getRole());
-        }
-        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-            memberEntity.changePassword(passwordEncoder.encode(request.getPassword()));
-        }
-        if (request.getEmail() != null && !request.getEmail().isEmpty()) {
-            memberEntity.changeEmail(request.getEmail());
-        }
-        if (request.getName() != null && !request.getName().isEmpty()) {
-            memberEntity.changeName(request.getName());
+        val imageUrl = if (profileImage != null && !profileImage.isEmpty) {
+            imageRepository.upload(profileImage)
+        } else {
+            "$uploadPath/defaultImage.png"
         }
 
-        if (request.getNickname() != null && !request.getNickname().isEmpty()) {
-            memberEntity.changeNickname(request.getNickname());
+        memberEntity.changeProfileImage(imageUrl)
+
+        // .takeIf 확장 함수 => 매개변수 안의 조건이 만족하는 경우에만 객체를 반환하는 기능
+        request.role?.let { memberEntity.changeRole(it) }  // request.role 이 null이 아닐 경우, let 실행
+        request.password?.takeIf { it.isNotEmpty() }?.let {   // request.password이 null이 아니고, 공백이 아닌 경우, let 실행
+            memberEntity.changePassword(passwordEncoder.encode(it))
         }
+        request.email?.takeIf { it.isNotEmpty() }?.let { memberEntity.changeEmail(it) }
+        request.name?.takeIf { it.isNotEmpty() }?.let { memberEntity.changeName(it) }
+        request.nickname?.takeIf { it.isNotEmpty() }?.let { memberEntity.changeNickname(it) }
 
-        memberRepository.save(memberEntity);
-
+        memberRepository.save(memberEntity)
     }
 
-    public void deleteMember(String userId) {
-        MemberEntity memberEntity = memberRepository.findByUserId(userId)
-                .orElseThrow(() -> MemberException.NOT_FOUND.get());
+    fun deleteMember(userId: String) {
+        val memberEntity = memberRepository.findByUserId(userId)
+            ?: throw MemberException.NOT_FOUND.get()
 
-        memberRepository.delete(memberEntity);
-
+        memberRepository.delete(memberEntity)
     }
 
-    public MemberEntity findByEmail(String email) {
-        MemberEntity member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
-        return member; // MemberEntity를 MemberDTO로 변환하여 반환
+    fun findByEmail(email: String): MemberEntity {
+        return memberRepository.findByEmail(email)?: throw IllegalArgumentException("User not found with email: $email")
     }
 
-    public MemberEntity findByUserId(String userId) {
-        MemberEntity member = memberRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("UserId not found: " + userId));
-        return member; // MemberEntity를 MemberDTO로 변환하여 반환
+    fun findByUserId(userId: String): MemberEntity {
+        return memberRepository.findByUserId(userId)?: throw IllegalArgumentException("UserId not found: $userId")
     }
 
 }
