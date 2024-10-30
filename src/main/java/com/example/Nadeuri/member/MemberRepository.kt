@@ -1,12 +1,11 @@
-package com.example.Nadeuri.member;
+package com.example.Nadeuri.member
+
+import org.springframework.data.jpa.repository.JpaRepository
+import java.util.*
 
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.Optional;
-
-public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
-    Optional<MemberEntity> findByUserId(String userId);
-    boolean existsByUserId(String userId);
-    Optional<MemberEntity> findByEmail(String email);
+interface MemberRepository : JpaRepository<MemberEntity, Long> {
+    fun findByUserId(userId: String): MemberEntity?
+    fun existsByUserId(userId: String): Boolean
+    fun findByEmail(email: String): MemberEntity?
 }
