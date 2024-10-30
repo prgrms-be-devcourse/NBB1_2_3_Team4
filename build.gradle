@@ -31,6 +31,9 @@ dependencies {
 	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 	implementation "org.jetbrains.kotlin:kotlin-reflect"
 
+	//모델 맵퍼
+	implementation "org.modelmapper:modelmapper:2.4.4"
+
 	// Spring과 관련된 의존성
 	implementation 'net.coobird:thumbnailator:0.4.20'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
