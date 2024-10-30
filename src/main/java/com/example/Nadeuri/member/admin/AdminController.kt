@@ -19,13 +19,13 @@ class AdminController(private val adminService: AdminService) {
 
     // 멤버 조회
     @GetMapping("/{userId}")
-    fun selectMember(@PathVariable userId: String?): ResponseEntity<ApiResponse<*>> {
+    fun selectMember(@PathVariable userId: String): ResponseEntity<ApiResponse<*>> {
         return ResponseEntity.ok(ApiResponse.success(adminService.getAdminMember(userId)))
     }
 
     // 멤버 삭제
     @DeleteMapping("/{userId}")
-    fun deleteMember(@PathVariable userId: String?): ResponseEntity<ApiResponse<*>> {
+    fun deleteMember(@PathVariable userId: String): ResponseEntity<ApiResponse<*>> {
         adminService.deleteAdminMember(userId)
         return ResponseEntity.ok(ApiResponse.success("계정 삭제 완료"))
     }
@@ -33,8 +33,8 @@ class AdminController(private val adminService: AdminService) {
     // 멤버 수정
     @PutMapping("/{userId}")
     fun updateMember(
-        @PathVariable userId: String?,
-        @RequestBody memberEntity: MemberEntity?
+        @PathVariable userId: String,
+        @RequestBody memberEntity: MemberEntity
     ): ResponseEntity<ApiResponse<*>> {
         return ResponseEntity.ok(ApiResponse.success(adminService.updateAdminMember(userId, memberEntity)))
     }
