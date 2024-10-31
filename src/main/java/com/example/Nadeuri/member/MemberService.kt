@@ -5,6 +5,7 @@ import com.example.Nadeuri.member.dto.MemberDTO
 import com.example.Nadeuri.member.dto.request.MemberUpdateRequest
 import com.example.Nadeuri.member.dto.request.SignupDTO
 import com.example.Nadeuri.member.exception.MemberException
+import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -17,6 +18,7 @@ class MemberService(
     private val memberRepository: MemberRepository,
     private val passwordEncoder: PasswordEncoder,
     private val imageRepository: ImageRepository,
+    private val modelMapper: ModelMapper,
     @Value("\${file.local.upload.path}") private val uploadPath: String
 ) {
 
@@ -28,14 +30,14 @@ class MemberService(
             throw MemberException.BAD_CREDENTIALS.get() // 비밀번호가 일치하지 않는 경우 예외 발생
         }
 
-        return MemberDTO(member)
+        return modelMapper.map(member,MemberDTO::class.java)
     }
 
     fun read(userId: String): MemberDTO {
         val foundMember = memberRepository.findByUserId(userId)
         val member = foundMember ?: throw MemberException.BAD_CREDENTIALS.get()
 
-        return MemberDTO(member) // 엔티티를 DTO 객체로 반환
+        return modelMapper.map(member,MemberDTO::class.java) // 엔티티를 DTO 객체로 반환
     }
 
     // 회원 가입
@@ -70,10 +72,10 @@ class MemberService(
         memberEntity.changeProfileImage(imageUrl)
 
         request.role?.let { memberEntity.changeRole(it) }  // request.role 이 null이 아닐 경우, let 실행
-        request.password?.let { memberEntity.changePassword(passwordEncoder.encode(it)) }
-        request.email?.let { memberEntity.changeEmail(it) }
-        request.name?.let { memberEntity.changeName(it) }
-        request.nickname?.let { memberEntity.changeNickname(it) }
+        request.password?.takeIf{it.isNotEmpty()}?.let { memberEntity.changePassword(passwordEncoder.encode(it)) }
+        request.email?.takeIf{it.isNotEmpty()}?.let { memberEntity.changeEmail(it) }
+        request.name?.takeIf{it.isNotEmpty()}?.let { memberEntity.changeName(it) }
+        request.nickname?.takeIf{it.isNotEmpty()}?.let { memberEntity.changeNickname(it) }
 
         memberRepository.save(memberEntity)
     }
