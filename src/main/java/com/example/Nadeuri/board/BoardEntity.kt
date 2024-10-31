@@ -1,6 +1,6 @@
 package com.example.Nadeuri.board
 
-import com.example.Nadeuri.comment.CommentEntity
+import com.example.Nadeuri.comment.entity.CommentEntity
 import com.example.Nadeuri.member.MemberEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
