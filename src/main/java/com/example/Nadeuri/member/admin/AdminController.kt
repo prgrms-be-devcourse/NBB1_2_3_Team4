@@ -14,7 +14,7 @@ class AdminController(private val adminService: AdminService) {
     // 멤버 전체 조회
     @GetMapping
     fun selectAllMembers(): ResponseEntity<ApiResponse<*>> {
-        return ResponseEntity.ok(ApiResponse.success(adminService.adminMemberAll))
+        return ResponseEntity.ok(ApiResponse.success(adminService.getAdminMemberAll()))
     }
 
     // 멤버 조회
