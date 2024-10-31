@@ -2,6 +2,10 @@ package com.example.Nadeuri.comment;
 
 import com.example.Nadeuri.board.BoardEntity;
 import com.example.Nadeuri.board.BoardRepository;
+import com.example.Nadeuri.comment.dto.response.CommentDTO;
+import com.example.Nadeuri.comment.entity.CommentEntity;
+import com.example.Nadeuri.comment.repository.CommentRepository;
+import com.example.Nadeuri.comment.service.CommentService;
 import com.example.Nadeuri.member.MemberEntity;
 import com.example.Nadeuri.member.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;

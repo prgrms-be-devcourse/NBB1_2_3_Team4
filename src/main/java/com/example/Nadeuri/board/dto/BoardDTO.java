@@ -2,8 +2,7 @@ package com.example.Nadeuri.board.dto;
 
 import com.example.Nadeuri.board.BoardEntity;
 import com.example.Nadeuri.board.Category;
-import com.example.Nadeuri.comment.CommentEntity;
-import lombok.Data;
+import com.example.Nadeuri.comment.entity.CommentEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
