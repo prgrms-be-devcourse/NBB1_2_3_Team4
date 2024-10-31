@@ -3,15 +3,11 @@ package com.example.Nadeuri.member.admin
 import com.example.Nadeuri.member.MemberEntity
 import com.example.Nadeuri.member.MemberRepository
 import com.example.Nadeuri.member.dto.MemberDTO
-import lombok.RequiredArgsConstructor
-import lombok.extern.log4j.Log4j2
 import org.modelmapper.ModelMapper
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-@RequiredArgsConstructor
-@Log4j2
 @Transactional
 // 어드민 서비스
 class AdminService(private val memberRepository: MemberRepository,private val modelMapper: ModelMapper) {
@@ -27,28 +23,32 @@ class AdminService(private val memberRepository: MemberRepository,private val mo
 
     // 멤버 조회
     fun getAdminMember(userId: String): MemberDTO {
-        val member: MemberEntity = memberRepository.findByUserId(userId)
-            .orElseThrow { IllegalArgumentException("Account not found") }
-        return MemberDTO(member)
+        val member: MemberEntity = memberRepository.findByUserId(userId) ?:
+        throw IllegalArgumentException("Account not found")
+        //널 허용이 되었으므로 널일경우 예외를 처리하도록 변경
+        return modelMapper.map(member,MemberDTO::class.java)
+        //피드백 반영하여 modelMapper로 일관
     }
 
     // 멤버 수정
     fun updateAdminMember(userId: String, memberEntity: MemberEntity): MemberDTO {
         val member: MemberEntity = memberRepository.findByUserId(userId)
-            .orElseThrow { IllegalArgumentException("Account not found") }
+            ?: throw IllegalArgumentException("Account not found")
+
         member.changeEmail(memberEntity.email)
         member.changeNickname(memberEntity.nickname)
         member.changeRole(memberEntity.role)
         member.changeBirthDate(memberEntity.birthDate)
         memberEntity.profileImage?.let { member.changeProfileImage(it) } // 이미지 변경시에만 업데이트
         //let 확장 함수를 사용하여 프로필이미지가 널이 아닐경우 프로필 이미지를 (it) 변경
-        return MemberDTO(member)
+        return modelMapper.map(member,MemberDTO::class.java)
+        //피드백 반영하여 modelMapper로 일관
     }
 
     // 멤버 삭제
     fun deleteAdminMember(userId: String) {
         val member: MemberEntity = memberRepository.findByUserId(userId)
-            .orElseThrow { IllegalArgumentException("Account not found") }
+            ?: throw IllegalArgumentException("Account not found")
 
         memberRepository.delete(member)
     }
