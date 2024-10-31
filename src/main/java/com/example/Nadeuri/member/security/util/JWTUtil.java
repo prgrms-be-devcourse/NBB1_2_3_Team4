@@ -63,22 +63,4 @@ public class JWTUtil {
         return claims;
     }
 
-
-    public String generateToken(MemberEntity user, Duration expiredAt) {
-        Date now = new Date();
-        return makeToken(new Date(now.getTime() + expiredAt.toMillis()), user);
-    }
-
-    private String makeToken(Date expiry, MemberEntity user) {
-        Date now = new Date();
-
-        return Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setIssuedAt(now)
-                .setExpiration(expiry)
-                .setSubject(user.getEmail())
-                .claim("id", user.getUserId())
-                .signWith(SignatureAlgorithm.HS256, key)
-                .compact();
-    }
 }
