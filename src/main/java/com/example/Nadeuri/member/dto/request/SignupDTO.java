@@ -3,6 +3,7 @@ package com.example.Nadeuri.member.dto.request;
 import com.example.Nadeuri.member.MemberEntity;
 import com.example.Nadeuri.member.Role;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,17 +14,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class SignupDTO {
-    @NotBlank
+    @NotEmpty
     private String userId;
-    @NotBlank
+    @NotEmpty
     private String password;
-    @NotBlank
+    @NotEmpty
     private String name;
-    @NotBlank
+    @NotEmpty
     private String email;
-    @NotBlank
+    @NotEmpty
     private String nickname;
-    @NotBlank
+    @NotEmpty
     private String birthDate;
 
     private String imageUrl;
