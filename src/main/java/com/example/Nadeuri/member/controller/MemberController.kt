@@ -38,7 +38,7 @@ class MemberController(
     fun signUp(
         @Valid @RequestPart("signUpDTO") signUpDTO: SignupDTO,
         @RequestPart(value = "image", required = false) profileImage: MultipartFile?
-    ): ResponseEntity<ApiResponse<Any>> {
+    ): ResponseEntity<ApiResponse<Any?>> {
         memberService.signUp(signUpDTO, profileImage)
         return ResponseEntity.ok(ApiResponse.success(null))
     }
@@ -78,7 +78,7 @@ class MemberController(
         @RequestPart("memberUpdateRequest") memberUpdateRequest: MemberUpdateRequest,
         @RequestPart(value = "image", required = false) profileImage: MultipartFile?,
         authentication: Authentication
-    ): ResponseEntity<ApiResponse<Any>> {
+    ): ResponseEntity<ApiResponse<Any?>> {
         val dbUserId = authentication.name
         log.info(dbUserId)
 
@@ -95,7 +95,7 @@ class MemberController(
     fun delete(
         @PathVariable("userId") userId: String,
         authentication: Authentication
-    ): ResponseEntity<ApiResponse<Any>> {
+    ): ResponseEntity<ApiResponse<Any?>> {
         val dbUserId = authentication.name
         log.info(dbUserId)
 
