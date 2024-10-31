@@ -3,6 +3,7 @@ package com.example.Nadeuri.member
 import com.example.Nadeuri.board.BoardEntity
 import com.example.Nadeuri.comment.CommentEntity
 import jakarta.persistence.*
+import jakarta.validation.constraints.Pattern
 
 @Entity
 @Table(name = "member")
@@ -13,6 +14,10 @@ data class MemberEntity(
 
     var userId: String,
     var password: String,
+    @field:Pattern(
+        regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[a-zA-Z]{2,6}$",
+        message = "Email pattern should be valid"
+    )
     var email: String,
     var birthDate: String,
     var name: String,
