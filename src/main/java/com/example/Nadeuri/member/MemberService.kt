@@ -5,16 +5,13 @@ import com.example.Nadeuri.member.dto.MemberDTO
 import com.example.Nadeuri.member.dto.request.MemberUpdateRequest
 import com.example.Nadeuri.member.dto.request.SignupDTO
 import com.example.Nadeuri.member.exception.MemberException
-import lombok.RequiredArgsConstructor
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
-import java.util.*
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 class MemberService(
     private val memberRepository: MemberRepository,
