@@ -1,4 +1,3 @@
-// This code is using Spring Framework and QueryDSL
 package com.example.Nadeuri.board.search
 
 import com.example.Nadeuri.board.BoardEntity
