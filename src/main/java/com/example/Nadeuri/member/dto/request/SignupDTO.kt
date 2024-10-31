@@ -1,47 +1,40 @@
-package com.example.Nadeuri.member.dto.request;
+package com.example.Nadeuri.member.dto.request
 
-import com.example.Nadeuri.member.MemberEntity;
-import com.example.Nadeuri.member.Role;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.example.Nadeuri.member.MemberEntity
+import com.example.Nadeuri.member.Role
+import jakarta.validation.constraints.NotBlank
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class SignupDTO {
-    @NotEmpty
-    private String userId;
-    @NotEmpty
-    private String password;
-    @NotEmpty
-    private String name;
-    @NotEmpty
-    private String email;
-    @NotEmpty
-    private String nickname;
-    @NotEmpty
-    private String birthDate;
+data class SignupDTO(
+    @field:NotBlank
+    val userId: String,
 
-    private String imageUrl;
+    @field:NotBlank
+    val password: String,
 
+    @field:NotBlank
+    val name: String,
 
+    @field:NotBlank
+    val email: String,
 
-    public MemberEntity toEntity(String encodedPassword, Role role, String imageUrl) {
+    @field:NotBlank
+    val nickname: String,
 
-        return MemberEntity.builder()
-                .userId(userId)
-                .name(name)
-                .email(email)
-                .birthDate(birthDate)
-                .password(encodedPassword)
-                .nickname(nickname)
-                .profileImage(imageUrl)
-                .role(role) //등록시에 USER로 자동설정
-                .build();
+    @field:NotBlank
+    val birthDate: String,
+
+    val imageUrl: String? = null // 기본값을 null로 설정
+) {
+    fun toEntity(encodedPassword: String, role: Role, imageUrl: String): MemberEntity {
+        return MemberEntity(
+            userId = userId,
+            name = name,
+            email = email,
+            birthDate = birthDate,
+            password = encodedPassword,
+            nickname = nickname,
+            profileImage = imageUrl,
+            role = role // 등록 시 자동으로 USER로 설정
+        )
     }
 }

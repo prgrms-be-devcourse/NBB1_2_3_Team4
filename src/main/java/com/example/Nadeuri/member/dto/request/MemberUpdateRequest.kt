@@ -1,23 +1,13 @@
-package com.example.Nadeuri.member.dto.request;
+package com.example.Nadeuri.member.dto.request
 
-import com.example.Nadeuri.member.Role;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.Getter;
+import com.example.Nadeuri.member.Role
 
-@Getter
-public class MemberUpdateRequest {
-    private Role role;
-    @NotBlank
-    private String password;
-    @NotBlank
-    private String name;
-    @NotBlank
-    private String email;
-    @NotBlank
-    private String nickname;
-    private String profileImage;
-
-    private boolean deleteProfileImage; // 프로필 이미지 삭제 요청 필드
-
-}
+data class MemberUpdateRequest (
+    val role: Role? = null,
+    val password: String?,
+    val name: String?,
+    val email: String?,
+    val nickname: String?,
+    val profileImage: String? = null,
+    val deleteProfileImage: Boolean = false // 프로필 이미지 삭제 요청 필드
+)

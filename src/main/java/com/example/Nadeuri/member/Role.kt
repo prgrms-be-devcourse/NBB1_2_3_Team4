@@ -1,21 +1,18 @@
-package com.example.Nadeuri.member;
+package com.example.Nadeuri.member
 
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.*
 
-public enum Role {
+enum class Role {
     USER,
-    MODERATOR,  //게시판 중간 관리자
+    MODERATOR,  // 게시판 중간 관리자
     ADMIN;
 
     // 계층 구조 정의 (ADMIN은 모든 권한, MODERATOR는 USER 권한 포함)
-    public Set<Role> getAuthorities() {
-        if(this == ADMIN) {
-            return EnumSet.of(ADMIN, MODERATOR, USER);
-        } else if(this == MODERATOR) {
-            return EnumSet.of(MODERATOR, USER);
-        } else {
-            return EnumSet.of(USER);
+    fun getAuthorities(): Set<Role> {
+        return when (this) {
+            ADMIN -> EnumSet.of(ADMIN, MODERATOR, USER)
+            MODERATOR -> EnumSet.of(MODERATOR, USER)
+            USER -> EnumSet.of(USER)
         }
     }
 }
