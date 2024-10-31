@@ -1,7 +1,7 @@
 package com.example.Nadeuri.member
 
 import com.example.Nadeuri.board.BoardEntity
-import com.example.Nadeuri.comment.CommentEntity
+import com.example.Nadeuri.comment.entity.CommentEntity
 import jakarta.persistence.*
 
 @Entity
