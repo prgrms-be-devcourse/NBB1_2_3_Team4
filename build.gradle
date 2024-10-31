@@ -1,10 +1,11 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.4'
-	id 'io.spring.dependency-management' version '1.1.6'
-	id 'org.jetbrains.kotlin.jvm'
-	id 'org.jetbrains.kotlin.plugin.spring' version '1.8.10' // all-open, no-arg 플러그인
-	id "org.jetbrains.kotlin.plugin.jpa" version "1.9.25"
+    id 'java'
+    id 'org.springframework.boot' version '3.3.4'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.10'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.8.10' // all-open, no-arg 플러그인
+    id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.25'
+    id 'org.jetbrains.kotlin.kapt' version '1.9.21'
 }
 
 group = 'com.example'
@@ -34,7 +35,6 @@ dependencies {
     // 모델 맵퍼
     implementation "org.modelmapper:modelmapper:2.4.4"
 
-
     // Spring과 관련된 의존성
     implementation 'net.coobird:thumbnailator:0.4.20'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -48,10 +48,17 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
-    // Lombok과 QueryDSL
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'
+    // QueryDSL 의존성 추가
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    kapt 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+    kapt 'jakarta.annotation:jakarta.annotation-api'
+    kapt 'jakarta.persistence:jakarta.persistence-api'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
 
     // 개발 및 테스트 의존성
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -63,6 +70,33 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
-tasks.named('test') {
+// Querydsl 설정부 추가 - start
+def generated = file("src/main/generated")
+
+// querydsl QClass 파일 생성 위치를 지정
+tasks.withType(JavaCompile) {
+    options.generatedSourceOutputDirectory = generated
+}
+
+// kotlin source set에 querydsl QClass 위치 추가
+sourceSets {
+    main {
+        kotlin.srcDirs += [generated]
+    }
+}
+
+// gradle clean 시에 QClass 디렉토리 삭제
+tasks.named("clean") {
+    doLast {
+        generated.deleteDir()
+    }
+}
+
+kapt {
+    generateStubs = true
+}
+// Querydsl 설정부 추가 - end
+
+tasks.test {
     useJUnitPlatform()
 }
