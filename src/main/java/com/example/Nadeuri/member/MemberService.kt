@@ -88,10 +88,6 @@ class MemberService(
         memberRepository.delete(memberEntity)
     }
 
-    fun findByEmail(email: String): MemberEntity {
-        return memberRepository.findByEmail(email)?: throw IllegalArgumentException("User not found with email: $email")
-    }
-
     fun findByUserId(userId: String): MemberEntity {
         return memberRepository.findByUserId(userId)?: throw IllegalArgumentException("UserId not found: $userId")
     }
