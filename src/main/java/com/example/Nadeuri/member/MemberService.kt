@@ -72,14 +72,11 @@ class MemberService(
 
         memberEntity.changeProfileImage(imageUrl)
 
-        // .takeIf 확장 함수 => 매개변수 안의 조건이 만족하는 경우에만 객체를 반환하는 기능
         request.role?.let { memberEntity.changeRole(it) }  // request.role 이 null이 아닐 경우, let 실행
-        request.password?.takeIf { it.isNotEmpty() }?.let {   // request.password이 null이 아니고, 공백이 아닌 경우, let 실행
-            memberEntity.changePassword(passwordEncoder.encode(it))
-        }
-        request.email?.takeIf { it.isNotEmpty() }?.let { memberEntity.changeEmail(it) }
-        request.name?.takeIf { it.isNotEmpty() }?.let { memberEntity.changeName(it) }
-        request.nickname?.takeIf { it.isNotEmpty() }?.let { memberEntity.changeNickname(it) }
+        request.password?.let { memberEntity.changePassword(passwordEncoder.encode(it)) }
+        request.email?.let { memberEntity.changeEmail(it) }
+        request.name?.let { memberEntity.changeName(it) }
+        request.nickname?.let { memberEntity.changeNickname(it) }
 
         memberRepository.save(memberEntity)
     }
