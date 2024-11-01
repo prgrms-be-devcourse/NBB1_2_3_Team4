@@ -1,6 +1,6 @@
 package com.example.Nadeuri.common.advice
 
-import com.example.Nadeuri.board.exception.BoardTaskException
+import com.example.Nadeuri.board.kotlin.exception.BoardTaskException2
 import com.example.Nadeuri.comment.exception.CommentTaskException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class APIControllerAdvice {
 
-    @ExceptionHandler(BoardTaskException::class, CommentTaskException::class)
+    @ExceptionHandler(BoardTaskException2::class, CommentTaskException::class)
     fun handleException(e: RuntimeException): ResponseEntity<Map<String, String?>> {
         val statusCode = when (e) {
 //            is BoardTaskException -> e.code

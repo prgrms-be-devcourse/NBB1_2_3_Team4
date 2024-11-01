@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Pattern
 data class MemberEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val memberNo: Long? = null,
+    val memberNo: Long = 0L,
 
     var userId: String,
     var password: String,
@@ -61,5 +61,9 @@ data class MemberEntity(
     fun changeRole(role: Role) {
         this.role = role
     }
+
+    fun isNotWriter(name: String) =
+        this.name != name
+
 }
 

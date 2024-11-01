@@ -1,5 +1,8 @@
 package com.example.Nadeuri.board
 
+
+import com.example.Nadeuri.board.kotlin.domain.Category2
+import com.example.Nadeuri.board.kotlin.exception.BoardException2
 import com.example.Nadeuri.comment.entity.CommentEntity
 import com.example.Nadeuri.member.MemberEntity
 import jakarta.persistence.CascadeType
@@ -28,12 +31,12 @@ data class BoardEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_no", nullable = false)
-    var id: Long? = null,
+    var id: Long = 0L,
 
     // 멤버 테이블 참조 FK
     @ManyToOne(fetch = FetchType.LAZY, optional = false) // optional = FK(참조키)에 널 허용하지않음
     @JoinColumn(name = "member_no") // 다른 테이블의 컬럼명
-    var member: MemberEntity? = null, // 멤버 객체로 변경 필요
+    var member: MemberEntity, // 멤버 객체로 변경 필요
 
     @Column(name = "board_title", nullable = false)
     var boardTitle: String,
@@ -43,10 +46,10 @@ data class BoardEntity(
 
     @Column(name = "category", nullable = false)
     @Enumerated(EnumType.STRING)
-    var category: Category,
+    var category2: Category2,
 
     @Column(name = "image_url")
-    var imageUrl: String? = null,
+    var imageUrl: String,
 
     @Column(name = "like_count")
     var likeCount: Int = 0,
@@ -72,30 +75,28 @@ data class BoardEntity(
                 member: MemberEntity,
                 boardTitle: String,
                 boardContent: String,
-                category: Category,
-                imageUrl: String?
+                category2: Category2,
+                imageUrl: String
             ): BoardEntity {
                 return BoardEntity(
                     member = member,
                     boardTitle = boardTitle,
                     boardContent = boardContent,
-                    category = category,
+                    category2 = category2,
                     imageUrl = imageUrl
                 )
             }
         }
 
         fun update(
-            member: MemberEntity,
             boardTitle: String,
             boardContent: String,
-            category: Category,
-            imageUrl: String?
+            category2: Category2,
+            imageUrl: String,
         ) {
-            this.member = member
             this.boardTitle = boardTitle
             this.boardContent = boardContent
-            this.category = category
+            this.category2 = category2
             this.imageUrl = imageUrl
         }
 
@@ -109,5 +110,11 @@ data class BoardEntity(
 
         fun decreaseLikeCount() {
             this.likeCount--
+        }
+
+        fun validateWriter(name: String) {
+            if (member.isNotWriter(name)) {
+                throw BoardException2.NOT_MATCHED_USER.get()
+            }
         }
     }
