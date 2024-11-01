@@ -1,13 +1,11 @@
 package com.example.Nadeuri.board.dto;
 
 import com.example.Nadeuri.board.BoardEntity;
-import com.example.Nadeuri.board.Category;
+import com.example.Nadeuri.board.kotlin.domain.Category2;
 import com.example.Nadeuri.comment.entity.CommentEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +23,7 @@ public class BoardDTO {
 
     private String boardContent;
 
-    private Category category;
+    private Category2 category;
 
     private String imageUrl;
 
@@ -42,7 +40,7 @@ public class BoardDTO {
         this.member = boardEntity.getMember().getUserId();
         this.boardTitle = boardEntity.getBoardTitle();
         this.boardContent = boardEntity.getBoardContent();
-        this.category = boardEntity.getCategory();
+        this.category = boardEntity.getCategory2();
         this.imageUrl = boardEntity.getImageUrl();
         this.createdAt = boardEntity.getCreatedAt();
         this.updatedAt = boardEntity.getUpdatedAt();
