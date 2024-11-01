@@ -1,15 +1,11 @@
-package com.example.Nadeuri.member.security.auth;
+package com.example.Nadeuri.member.security.auth
 
-import lombok.RequiredArgsConstructor;
+import java.security.Principal
 
-import java.security.Principal;
-
-@RequiredArgsConstructor
-public class CustomUserPrincipal implements Principal {
-    private final String mid;
-
-    @Override
-    public String getName() {
-        return mid;
+class CustomUserPrincipal(
+    private val mid: String
+) : Principal {
+    override fun getName(): String {
+        return mid
     }
 }

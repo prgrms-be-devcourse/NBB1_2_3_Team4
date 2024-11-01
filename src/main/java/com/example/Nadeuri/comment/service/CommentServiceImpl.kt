@@ -31,7 +31,7 @@ class CommentServiceImpl(
             .orElseThrow { CommentException.NOT_FOUND.get() }
 
         val member = memberRepository.findByUserId(commentRequestDTO.userId)
-            .orElseThrow { MemberException.NOT_FOUND.get() }
+            ?: throw MemberException.NOT_FOUND.get()
 
         val parentComment = commentRequestDTO.parentCommentId?.let {
             commentRepository.findById(it).orElseThrow { CommentException.NOT_FOUND.get() }

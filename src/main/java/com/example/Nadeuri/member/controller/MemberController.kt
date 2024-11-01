@@ -4,6 +4,7 @@ import com.example.Nadeuri.common.response.ApiResponse
 import com.example.Nadeuri.member.MemberRepository
 import com.example.Nadeuri.member.MemberService
 import com.example.Nadeuri.member.dto.MemberDTO
+import com.example.Nadeuri.member.dto.request.LoginDTO
 import com.example.Nadeuri.member.dto.request.MemberUpdateRequest
 import com.example.Nadeuri.member.dto.request.SignupDTO
 import com.example.Nadeuri.member.exception.MemberException
@@ -45,17 +46,17 @@ class MemberController(
 
     @PostMapping("/login")
     fun login(
-        @RequestBody memberDTO: MemberDTO,
+        @RequestBody loginDTO: LoginDTO,
         response: HttpServletResponse
     ): ResponseEntity<Map<String, String>> {
-        val member = memberRepository.findByUserId(memberDTO.userId)?: throw IllegalArgumentException("가입되지 않은 Id 입니다.")
+        val member = memberRepository.findByUserId(loginDTO.userId)?: throw IllegalArgumentException("가입되지 않은 Id 입니다.")
 
-        if (!passwordEncoder.matches(memberDTO.password, member.password)) {
+        if (!passwordEncoder.matches(loginDTO.password, member.password)) {
             throw IllegalArgumentException("잘못된 비밀번호입니다.")
         }
 
         // 사용자 정보 가져오기
-        val foundMemberDTO = memberService.read(memberDTO.userId, memberDTO.password)
+        val foundMemberDTO = memberService.read(loginDTO.userId, loginDTO.password)
 
         // 토큰 생성
         val payloadMap = foundMemberDTO.getPayload()
@@ -110,7 +111,8 @@ class MemberController(
     @GetMapping("/me")
     fun getCurrentUser(authentication: Authentication): ResponseEntity<ApiResponse<MemberDTO>> {
         val userId = authentication.name // 인증된 사용자 ID 가져오기
-        val memberDTO = modelMapper.map( memberRepository.findByUserId(userId), MemberDTO::class.java ) // 사용자 정보 조회
+        val memberEntity = memberRepository.findByUserId(userId)
+        val memberDTO = MemberDTO(memberEntity ?: throw MemberException.NOT_FOUND.get()) // 사용자 정보 조회
         return ResponseEntity.ok(ApiResponse.success(memberDTO)) // 사용자 정보를 포함한 ApiResponse 반환
     }
 }

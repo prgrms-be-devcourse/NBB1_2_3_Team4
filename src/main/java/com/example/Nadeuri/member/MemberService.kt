@@ -30,14 +30,14 @@ class MemberService(
             throw MemberException.BAD_CREDENTIALS.get() // 비밀번호가 일치하지 않는 경우 예외 발생
         }
 
-        return modelMapper.map(member,MemberDTO::class.java)
+        return MemberDTO(member)
     }
 
     fun read(userId: String): MemberDTO {
         val foundMember = memberRepository.findByUserId(userId)
         val member = foundMember ?: throw MemberException.BAD_CREDENTIALS.get()
 
-        return modelMapper.map(member,MemberDTO::class.java) // 엔티티를 DTO 객체로 반환
+        return MemberDTO(member)// 엔티티를 DTO 객체로 반환
     }
 
     // 회원 가입
