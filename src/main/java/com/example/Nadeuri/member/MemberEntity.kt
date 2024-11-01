@@ -22,7 +22,7 @@ data class MemberEntity(
     var birthDate: String,
     var name: String,
     var nickname: String,
-    var profileImage: String? = null,
+    var profileImage: String?,
 
     @Enumerated(EnumType.STRING)
     var role: Role,
