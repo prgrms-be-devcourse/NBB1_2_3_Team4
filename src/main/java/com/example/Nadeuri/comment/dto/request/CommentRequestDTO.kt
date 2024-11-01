@@ -1,6 +1,6 @@
 package com.example.Nadeuri.comment.dto.request
 
-import com.example.Nadeuri.board.BoardEntity
+import com.example.Nadeuri.board.kotlin.entity.BoardEntity
 import com.example.Nadeuri.comment.entity.CommentEntity
 import com.example.Nadeuri.member.MemberEntity
 import jakarta.validation.constraints.NotBlank

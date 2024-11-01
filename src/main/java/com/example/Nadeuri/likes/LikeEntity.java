@@ -1,6 +1,6 @@
 //package com.example.Nadeuri.likes;
 //
-//import com.example.Nadeuri.board.BoardEntity;
+//import com.example.Nadeuri.board.kotlin.entity.BoardEntity;
 //import com.example.Nadeuri.member.MemberEntity;
 //import jakarta.persistence.Column;
 //import jakarta.persistence.Entity;

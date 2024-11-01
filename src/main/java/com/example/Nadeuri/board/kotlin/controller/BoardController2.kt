@@ -1,30 +1,29 @@
 package com.example.Nadeuri.board.kotlin.controller
 
-import com.example.Nadeuri.board.BoardEntity
+import com.example.Nadeuri.board.kotlin.entity.BoardEntity
 import com.example.Nadeuri.board.kotlin.common.ApiResponse2
-import com.example.Nadeuri.board.kotlin.controller.dto.BoardCreateRequest2
-import com.example.Nadeuri.board.kotlin.controller.dto.BoardDeleteResponse2
-import com.example.Nadeuri.board.kotlin.controller.dto.BoardUpdateRequest2
-import com.example.Nadeuri.board.kotlin.controller.dto.BoardUpdateResponse2
+import com.example.Nadeuri.board.kotlin.controller.dto.*
 import com.example.Nadeuri.board.kotlin.service.BoardService2
+import com.example.Nadeuri.member.controller.MemberController
 import jakarta.validation.Valid
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestPart
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import kotlin.math.log
 
 @RequestMapping("/v2/boards")
 @RestController
 class BoardController2(
     private val boardService2: BoardService2
 ) {
+    companion object {
+        private val log: Logger = LogManager.getLogger(BoardController2::class.java)
+    }
+
 
     /**
      * 게시글 등록
@@ -36,6 +35,33 @@ class BoardController2(
     ): ResponseEntity<ApiResponse2<*>> {
         boardService2.register(request, multipartFile)
         return ResponseEntity.ok(ApiResponse2.success(null))
+    }
+
+
+    /**
+     * 게시글 조회
+     */
+    @GetMapping("/{id}")
+    fun read(@PathVariable("id") boardId: Long): ResponseEntity<ApiResponse2<*>> {
+        log.info("read controller()")
+        return ResponseEntity.ok(ApiResponse2.success(boardService2.read(boardId)))
+    }
+
+    /**
+     * 게시글 전체 조회
+     */
+    @GetMapping
+    fun page(@Valid boardPageRequestDTO: BoardPageRequestDTO2): ResponseEntity<ApiResponse2<*>> {
+        return ResponseEntity.ok(ApiResponse2.success(boardService2.page(boardPageRequestDTO)))
+    }
+
+    /**
+     * 게시글 전체 조회 (검색)
+     */
+    @GetMapping("/search/{keyword}")
+    fun pageSearch(@PathVariable("keyword") searchKeyword: String,
+                   @Valid boardPageRequestDTO: BoardPageRequestDTO2): ResponseEntity<ApiResponse2<*>> {
+        return ResponseEntity.ok(ApiResponse2.success(boardService2.pageSearch(searchKeyword, boardPageRequestDTO)))
     }
 
     /**

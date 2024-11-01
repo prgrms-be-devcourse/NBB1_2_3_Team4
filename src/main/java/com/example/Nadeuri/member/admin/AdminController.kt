@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @PreAuthorize("hasRole('ADMIN')")
-@RequestMapping("/v1/admin")
+@RequestMapping("/v2/admin")
 class AdminController(private val adminService: AdminService) {
 
     // 멤버 전체 조회
