@@ -1,6 +1,6 @@
 package com.example.Nadeuri.board.kotlin.controller.dto
 
-import com.example.Nadeuri.board.BoardEntity
+import com.example.Nadeuri.board.kotlin.entity.BoardEntity
 
 data class BoardDeleteResponse2(
     val boardId: Long,

@@ -1,6 +1,6 @@
 package com.example.Nadeuri.comment.entity
 
-import com.example.Nadeuri.board.BoardEntity
+import com.example.Nadeuri.board.kotlin.entity.BoardEntity
 import com.example.Nadeuri.member.MemberEntity
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate

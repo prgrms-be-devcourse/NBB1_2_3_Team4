@@ -1,15 +1,9 @@
-package com.example.Nadeuri.board;
-
-import com.example.Nadeuri.board.kotlin.service.BoardService2;
-import com.example.Nadeuri.member.MemberService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+package com.example.Nadeuri.board.java;
 
 //@Controller
 //@RequiredArgsConstructor
 //@RequestMapping("/boards")
-public class BoardViewController {
+//public class BoardViewController {
 
 //    private final BoardService2 boardService2;
 //    private final MemberService memberService;
@@ -73,4 +67,4 @@ public class BoardViewController {
 //    }
 //
 
-}
+//}

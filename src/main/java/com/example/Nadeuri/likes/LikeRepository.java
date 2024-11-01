@@ -1,6 +1,6 @@
 //package com.example.Nadeuri.likes;
 //
-//import com.example.Nadeuri.board.BoardEntity;
+//import com.example.Nadeuri.board.kotlin.entity.BoardEntity;
 //import com.example.Nadeuri.member.MemberEntity;
 //import org.springframework.data.jpa.repository.JpaRepository;
 //import java.util.Optional;

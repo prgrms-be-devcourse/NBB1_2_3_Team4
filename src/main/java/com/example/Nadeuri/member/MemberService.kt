@@ -1,6 +1,6 @@
 package com.example.Nadeuri.member
 
-import com.example.Nadeuri.board.ImageRepository
+import com.example.Nadeuri.board.kotlin.repository.ImageRepository2
 import com.example.Nadeuri.member.dto.MemberDTO
 import com.example.Nadeuri.member.dto.request.MemberUpdateRequest
 import com.example.Nadeuri.member.dto.request.SignupDTO
@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile
 class MemberService(
     private val memberRepository: MemberRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val imageRepository: ImageRepository,
+    private val imageRepository: ImageRepository2,
     private val modelMapper: ModelMapper,
     @Value("\${file.local.upload.path}") private val uploadPath: String
 ) {

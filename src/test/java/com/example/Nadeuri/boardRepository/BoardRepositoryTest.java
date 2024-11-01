@@ -1,11 +1,9 @@
 package com.example.Nadeuri.boardRepository;
 
-import com.example.Nadeuri.board.BoardEntity;
+import com.example.Nadeuri.board.kotlin.entity.BoardEntity;
 import com.example.Nadeuri.board.BoardRepository;
-import com.example.Nadeuri.board.Category;
 import com.example.Nadeuri.board.ImageRepository;
 import com.example.Nadeuri.board.dto.BoardDTO;
-import com.example.Nadeuri.board.dto.request.BoardCreateRequest;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,10 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 

@@ -1,7 +1,9 @@
 package com.example.Nadeuri.board.kotlin.service
 
-import com.example.Nadeuri.board.BoardEntity
+import com.example.Nadeuri.board.kotlin.entity.BoardEntity
 import com.example.Nadeuri.board.kotlin.controller.dto.BoardCreateRequest2
+import com.example.Nadeuri.board.kotlin.controller.dto.BoardReadResponse2
+import com.example.Nadeuri.board.kotlin.controller.dto.BoardPageRequestDTO2
 import com.example.Nadeuri.board.kotlin.controller.dto.BoardUpdateRequest2
 import com.example.Nadeuri.board.kotlin.exception.BoardException2
 import com.example.Nadeuri.board.kotlin.repository.BoardRepository2
@@ -9,7 +11,11 @@ import com.example.Nadeuri.board.kotlin.repository.ImageRepository2
 import com.example.Nadeuri.member.MemberEntity
 import com.example.Nadeuri.member.MemberRepository
 import com.example.Nadeuri.member.exception.MemberException
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -24,6 +30,10 @@ class BoardService2(
     private val memberRepository: MemberRepository,
     private val imageRepository2: ImageRepository2,
 ) {
+    companion object {
+        private val log: Logger = LogManager.getLogger(BoardService2::class.java)
+    }
+
     @Value("\${file.local.upload.path}")
     private lateinit var uploadPath: String
 
@@ -52,6 +62,36 @@ class BoardService2(
             boardRepository2.save(board)
         } catch (e: Exception) {
             throw BoardException2.NOT_REGISTERED.get()
+        }
+    }
+
+    // 게시글 상세 조회 (1개 조회)
+    fun read(boardId: Long): BoardReadResponse2 {
+        val board: BoardEntity = retrieveBoard(boardId)
+        log.info("read service()")
+        if (board.deletedAt != null) throw BoardException2.NOT_FOUND.get()
+        return BoardReadResponse2(board)
+    }
+
+    // 게시글 전체 조회
+    fun page(boardPageRequestDTO: BoardPageRequestDTO2): Page<BoardReadResponse2> {
+        return try {
+            val sort = Sort.by("id").ascending()
+            val pageable = boardPageRequestDTO.getPageable(sort)
+            boardRepository2.pageDTO(pageable)
+        } catch (e: Exception) {
+            throw BoardException2.NOT_FOUND.get()
+        }
+    }
+
+    // 게시글 전체 조회 (검색) -- 제목, 작성자 검색
+    fun pageSearch(keyword: String, boardPageRequestDTO: BoardPageRequestDTO2): Page<BoardReadResponse2> {
+        return try {
+            val sort = Sort.by("id").ascending()
+            val pageable = boardPageRequestDTO.getPageable(sort)
+            boardRepository2.pageSearch(keyword, pageable)
+        } catch (e: Exception) {
+            throw BoardException2.NOT_FOUND.get()
         }
     }
 

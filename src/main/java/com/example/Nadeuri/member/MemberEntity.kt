@@ -1,6 +1,6 @@
 package com.example.Nadeuri.member
 
-import com.example.Nadeuri.board.BoardEntity
+import com.example.Nadeuri.board.kotlin.entity.BoardEntity
 import com.example.Nadeuri.comment.entity.CommentEntity
 import jakarta.persistence.*
 import jakarta.validation.constraints.Pattern

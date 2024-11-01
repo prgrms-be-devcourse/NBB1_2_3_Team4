@@ -1,6 +1,6 @@
 package com.example.Nadeuri.comment.mapper
 
-import com.example.Nadeuri.board.BoardEntity
+import com.example.Nadeuri.board.kotlin.entity.BoardEntity
 import com.example.Nadeuri.comment.dto.response.CommentResponseDTO
 import com.example.Nadeuri.comment.dto.request.CommentRequestDTO
 import com.example.Nadeuri.comment.entity.CommentEntity

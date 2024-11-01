@@ -1,6 +1,6 @@
 package com.example.Nadeuri.comment;
 
-import com.example.Nadeuri.board.BoardEntity;
+import com.example.Nadeuri.board.kotlin.entity.BoardEntity;
 import com.example.Nadeuri.board.BoardRepository;
 import com.example.Nadeuri.comment.dto.response.CommentDTO;
 import com.example.Nadeuri.comment.entity.CommentEntity;
