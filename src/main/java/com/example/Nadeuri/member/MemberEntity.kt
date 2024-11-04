@@ -63,7 +63,7 @@ data class MemberEntity(
     }
 
     fun isNotWriter(name: String) =
-        this.name != name
+        this.userId != name
 
 }
 
