@@ -19,16 +19,7 @@ class AdminService(private val memberRepository: MemberRepository,private val mo
 
         // MemberEntity를 MemberDTO로 매핑
         return members.map { memberEntity ->
-            MemberDTO(
-                userId = memberEntity.userId ?: "",
-                password = memberEntity.password ?: "",
-                name = memberEntity.name ?: "",
-                email = memberEntity.email ?: "",
-                role = memberEntity.role ?: Role.USER,
-                nickname = memberEntity.nickname ?: "",
-                profileImage = memberEntity.profileImage,
-                birthDate = memberEntity.birthDate ?: ""
-            )
+            MemberDTO(memberEntity)
             //보조 생성자 사용
         }
     }
