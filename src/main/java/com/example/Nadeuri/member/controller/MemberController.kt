@@ -60,8 +60,8 @@ class MemberController(
 
         // 토큰 생성
         val payloadMap = foundMemberDTO.getPayload()
-        val accessToken = jwtUtil.createToken(payloadMap, 120)
-        val refreshToken = jwtUtil.createToken(mapOf("userId" to foundMemberDTO.userId), 60 * 24 * 7)
+        val accessToken = jwtUtil.createToken(payloadMap, 1)
+        val refreshToken = jwtUtil.createToken(mapOf("userId" to foundMemberDTO.userId), 1)
 
         // 쿠키에 토큰 저장
         CookieUtil.addCookie(response, "accessToken", accessToken, 3600)
