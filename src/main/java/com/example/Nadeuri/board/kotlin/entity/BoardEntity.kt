@@ -52,7 +52,7 @@ data class BoardEntity(
     var imageUrl: String,
 
     @Column(name = "like_count")
-    var likeCount: Int? = 0,
+    var likeCount: Int = 0,
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
@@ -105,11 +105,11 @@ data class BoardEntity(
         }
 
         fun increaseLikeCount() {
-            this.likeCount = this.likeCount!! + 1
+            this.likeCount = this.likeCount + 1
         }
 
         fun decreaseLikeCount() {
-            this.likeCount = this.likeCount!! - 1
+            this.likeCount = this.likeCount - 1
         }
 
         fun validateWriter(name: String) {
