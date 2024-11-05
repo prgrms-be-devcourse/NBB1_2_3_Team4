@@ -39,13 +39,14 @@ class SecurityConfig(
         http
             .csrf { csrf -> csrf.disable() } // CSRF 비활성화
             .sessionManagement { session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // OAuth2는 세션을 사용하지 않음
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용하지 않음
             }
             // 특정 API에 대한 인증 요구
             .authorizeHttpRequests { authorize ->
                 authorize
-                    .requestMatchers("/api/token").permitAll() // 토큰 발급 요청은 모두 허용
-                    .anyRequest().permitAll() // 그 외 요청은 모두 허용
+                    .requestMatchers("/api/token", "/error", "/api/map/**").permitAll() // 특정 경로는 모두 허용
+                    .requestMatchers("/api/**").authenticated() // 나머지 API는 인증 필요
+                    .anyRequest().permitAll() // 그 외 모든 요청은 허용
             }
             // 인증 예외 처리
             .exceptionHandling { exception ->
