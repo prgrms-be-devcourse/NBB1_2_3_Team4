@@ -5,7 +5,6 @@ import com.example.Nadeuri.member.dto.MemberDTO
 import com.example.Nadeuri.member.dto.request.MemberUpdateRequest
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import lombok.RequiredArgsConstructor
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
@@ -45,7 +44,7 @@ class MemberViewController(private val memberService: MemberService) {
 
         val memberDTO = MemberDTO(memberService.findByUserId(userId))
         model.addAttribute("member", memberDTO)
-        return "member/edit"  // 회원정보 수정 페이지로 이동 (Thymeleaf 템플릿 등)
+        return "members/edit"  // 회원정보 수정 페이지로 이동 (Thymeleaf 템플릿 등)
     }
 
     // 회원정보 수정 처리

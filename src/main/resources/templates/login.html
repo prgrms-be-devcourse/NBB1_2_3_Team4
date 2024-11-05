@@ -106,7 +106,7 @@
         })
         .then(function(response) {
             alert('로그인 성공!');
-            window.location.href = '/boards/list'; // 로그인 후 게시물 목록 페이지로 리디렉션
+            window.location.href = '/board/list'; // 로그인 후 게시물 목록 페이지로 리디렉션
         })
         .catch(function(error) {
             const errorMessage = error.response && error.response.data && error.response.data.message

@@ -44,8 +44,7 @@ class SecurityConfig(
             // 특정 API에 대한 인증 요구
             .authorizeHttpRequests { authorize ->
                 authorize
-                    .requestMatchers("/api/token", "/error").permitAll() // 토큰 발급 요청은 모두 허용
-                    .requestMatchers("/api/**").authenticated() // 나머지 API는 인증 필요
+                    .requestMatchers("/api/token").permitAll() // 토큰 발급 요청은 모두 허용
                     .anyRequest().permitAll() // 그 외 요청은 모두 허용
             }
             // 인증 예외 처리
