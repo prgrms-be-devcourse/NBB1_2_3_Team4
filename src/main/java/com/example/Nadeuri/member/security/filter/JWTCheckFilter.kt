@@ -37,8 +37,9 @@ class JWTCheckFilter(
             request.requestURI.startsWith("/v1/members/login") -> true
             request.requestURI.startsWith("/members/sign-up") -> true
             request.requestURI.startsWith("/members/login") -> true
-            request.requestURI.startsWith("/boards/list") -> true
+            request.requestURI.startsWith("/board/list") -> true
             request.requestURI.startsWith("/img/") -> true
+
             request.requestURI == "/v1/boards" -> true
             request.requestURI == "/boards/" -> true
             else -> true
@@ -54,17 +55,27 @@ class JWTCheckFilter(
         log.info("--- doFilterInternal()")
         log.info("--- requestURI : ${request.requestURI}")
 
-        val headerAuth = request.getHeader("Authorization")
-        log.info("--- headerAuth : $headerAuth")
+        // 쿠키에서 토큰 값을 가져와야 하므로 쿠키에서 액세스 토큰 검색
+        var accessToken: String? = null
+        val cookies = request.cookies
+        if (cookies != null) {
+            for (cookie in cookies) {
+                if (cookie.name == "accessToken") {
+                    accessToken = cookie.value
+                    break
+                }
+            }
+        }
 
-        // 액세스 토큰이 없거나 'Bearer ' 가 아니면 403 예외 발생
-        if (headerAuth == null || !headerAuth.startsWith("Bearer ")) {
+        log.info("--- accessToken : $accessToken")
+
+        // 액세스 토큰이 없으면 403 예외 발생
+        if (accessToken == null) {
             handleException(response, Exception("ACCESS TOKEN NOT FOUND"))
             return
         }
 
         // 토큰 유효성 검증
-        val accessToken = headerAuth.substring(7) // "Bearer " 를 제외하고 토큰값 저장
         try {
             val claims = jwtUtil.validateToken(accessToken)
             log.info("--- 토큰 유효성 검증 완료 ---")

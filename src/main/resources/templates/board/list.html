@@ -9,16 +9,6 @@
         body {
             font-family: Arial, sans-serif;
         }
-        .gradient-custom {
-            background: #6a11cb;
-            background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
-            background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding-top: 50px;
-        }
         .card {
             border-radius: 1rem;
             width: 100%;
@@ -246,9 +236,9 @@
         window.location.href = '/members/logout';
     });
 
-    // 게시물 작성 버튼 클릭 시 /boards/create 페이지로 이동
+    // 게시물 작성 버튼 클릭 시 /board/create 페이지로 이동
     document.getElementById('createPostButton').addEventListener('click', function() {
-        window.location.href = '/boards/create';
+        window.location.href = '/board/create';
     });
 
     // 회원정보 수정 버튼 클릭 시 /members/edit 페이지로 이동
