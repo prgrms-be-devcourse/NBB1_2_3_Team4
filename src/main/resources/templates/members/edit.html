@@ -48,6 +48,9 @@
             <img th:src="@{${member.profileImage}}" alt="Profile Image" class="img-fluid mt-3" style="max-width: 200px;">
         </div>
 
+        <button type="submit" class="btn btn-primary">수정하기</button>
+    </form>
+
     <!-- 성공 메시지 -->
     <div th:if="${message}" class="alert alert-success mt-3" role="alert">
         <span th:text="${message}"></span>
