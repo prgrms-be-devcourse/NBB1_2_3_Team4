@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.modelmapper.ModelMapper
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -28,7 +27,6 @@ class MemberController(
     private val memberRepository: MemberRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtUtil: JWTUtil,
-    private val modelMapper: ModelMapper
 ) {
 
     companion object {
@@ -60,8 +58,8 @@ class MemberController(
 
         // 토큰 생성
         val payloadMap = foundMemberDTO.getPayload()
-        val accessToken = jwtUtil.createToken(payloadMap, 1)
-        val refreshToken = jwtUtil.createToken(mapOf("userId" to foundMemberDTO.userId), 1)
+        val accessToken = jwtUtil.createToken(payloadMap, 120)
+        val refreshToken = jwtUtil.createToken(mapOf("userId" to foundMemberDTO.userId), 180)
 
         // 쿠키에 토큰 저장
         CookieUtil.addCookie(response, "accessToken", accessToken, 3600)
@@ -84,6 +82,7 @@ class MemberController(
         log.info(dbUserId)
 
         if (authentication.name != userId || dbUserId != userId) { // 인증 사용자와 DTO의 사용자가 불일치
+            log.info(authentication.name)
             throw MemberException.NOT_MATCHED_USER.get()
         }
 

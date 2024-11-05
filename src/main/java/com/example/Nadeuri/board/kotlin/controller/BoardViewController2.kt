@@ -29,7 +29,7 @@ class BoardViewController2(
         val boards: Page<BoardReadResponse2> = boardService.page(boardPageRequestDTO)
         model.addAttribute("boards", boards.content)
         model.addAttribute("page", boards)
-        return "list" // list.html로 이동
+        return "board/list" // list.html로 이동
     }
 
     //게시글 상세 조회
