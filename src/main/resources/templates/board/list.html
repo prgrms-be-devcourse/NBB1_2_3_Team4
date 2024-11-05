@@ -60,6 +60,7 @@
                 <button id="logoutButton" class="btn btn-danger logout-button">로그아웃</button>
 
                 <div id="userInfoContainer" class="user-info" style="display: none;">
+                    <span id="userNameDisplay"></span>
                     <button id="editProfileButton" class="btn btn-info btn-sm" style="margin-left: 10px;">회원정보 수정</button>
                 </div>
             </div>
@@ -169,7 +170,7 @@
     }
 
     function viewBoard(postId) {
-        window.location.href = `/boards/${postId}`;
+        window.location.href = `/board/${postId}`;
     }
 
     function updatePagination(currentPage) {
@@ -212,6 +213,8 @@
                 const userName = userInfo.name;
                 const profileImage = userInfo.profileImage;
 
+                document.getElementById('userNameDisplay').innerText = userName;
+                document.getElementById('userProfileImage').src = profileImage;
                 document.getElementById('userInfoContainer').style.display = 'flex';
             }
         } else {
