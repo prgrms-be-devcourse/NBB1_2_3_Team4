@@ -5,6 +5,8 @@ import com.example.Nadeuri.board.kotlin.controller.dto.BoardPageRequestDTO2
 import com.example.Nadeuri.board.kotlin.controller.dto.BoardReadResponse2
 import com.example.Nadeuri.board.kotlin.service.BoardService2
 import com.example.Nadeuri.member.MemberService
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.springframework.data.domain.Page
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Controller
@@ -19,6 +21,9 @@ class BoardViewController2(
     private val boardService: BoardService2,
     private val memberService: MemberService
 ) {
+    companion object {
+        private val log: Logger = LogManager.getLogger(BoardService2::class.java)
+    }
 
     /**
      * 게시글 목록 페이지
@@ -29,6 +34,7 @@ class BoardViewController2(
         val boards: Page<BoardReadResponse2> = boardService.page(boardPageRequestDTO)
         model.addAttribute("boards", boards.content)
         model.addAttribute("page", boards)
+        log.info("boardController() list")
         return "board/list" // list.html로 이동
     }
 
@@ -57,8 +63,10 @@ class BoardViewController2(
         @RequestParam image: MultipartFile,
         authentication: Authentication
     ): String {
+        log.info("controller()")
         // Authentication 객체에서 username 추출
         val userId: String = authentication.name // username 가져오기
+        log.info("userId =" +userId)
         val memberId: Long = memberService.findByUserId(userId).memberNo // username으로 memberId 조회
         val updatedRequest = BoardCreateRequest2(
             memberId,
@@ -69,6 +77,6 @@ class BoardViewController2(
 
         // 게시글 등록 처리
         boardService.register(updatedRequest, image)
-        return "redirect:/boards/list" // 게시글 목록 페이지로 리다이렉트
+        return "redirect:/board/list" // 게시글 목록 페이지로 리다이렉트
     }
 }

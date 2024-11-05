@@ -60,8 +60,6 @@
                 <button id="logoutButton" class="btn btn-danger logout-button">로그아웃</button>
 
                 <div id="userInfoContainer" class="user-info" style="display: none;">
-                    <img id="userProfileImage" src="" alt="Profile Picture">
-                    <span id="userNameDisplay"></span>
                     <button id="editProfileButton" class="btn btn-info btn-sm" style="margin-left: 10px;">회원정보 수정</button>
                 </div>
             </div>
@@ -136,7 +134,7 @@
 
     function loadPosts(page) {
         currentPage = page;
-        fetch(`/v1/boards?page=${page}&size=${postsPerPage}`)
+        fetch(`/v2/boards?page=${page}&size=${postsPerPage}`)
             .then(response => response.json())
             .then(responseData => {
                 const postsData = responseData.data;
@@ -214,8 +212,6 @@
                 const userName = userInfo.name;
                 const profileImage = userInfo.profileImage;
 
-                document.getElementById('userNameDisplay').innerText = userName;
-                document.getElementById('userProfileImage').src = profileImage;
                 document.getElementById('userInfoContainer').style.display = 'flex';
             }
         } else {

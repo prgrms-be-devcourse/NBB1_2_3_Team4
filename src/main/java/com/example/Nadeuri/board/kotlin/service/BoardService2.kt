@@ -42,14 +42,16 @@ class BoardService2(
         request: BoardCreateRequest2,
         boardImage: MultipartFile?,
     ) {
-
+        log.info("service()")
         val imageUrl = if (boardImage == null || boardImage.isEmpty) {
             "$uploadPath/defaultImage.png"
         } else {
             imageRepository2.upload(boardImage)
         }
 
-        val member: MemberEntity = retrieveMember(request.memberId)
+        val memberId = request.memberId ?: throw IllegalArgumentException("memberId는 필수 값입니다.")
+        val member: MemberEntity = retrieveMember(memberId)
+
 
         try {
             val board = BoardEntity.create(
@@ -75,10 +77,13 @@ class BoardService2(
 
     // 게시글 전체 조회
     fun page(boardPageRequestDTO: BoardPageRequestDTO2): Page<BoardReadResponse2> {
-        return try {
+        try {
+            log.info("page service()")
             val sort = Sort.by("id").ascending()
             val pageable = boardPageRequestDTO.getPageable(sort)
-            boardRepository2.pageDTO(pageable)
+            val pageDTO = boardRepository2.pageDTO(pageable)
+            log.info(pageDTO.totalElements)
+            return pageDTO
         } catch (e: Exception) {
             throw BoardException2.NOT_FOUND.get()
         }

@@ -13,11 +13,6 @@
         <!-- 숨겨진 필드로 PUT 메서드 처리 -->
         <input type="hidden" name="_method" value="put" />
 
-        <!-- 비밀번호 수정 -->
-        <div class="form-group">
-            <label for="password">비밀번호</label>
-            <input type="password" class="form-control" id="password" name="password" th:value="${member.password}" required>
-        </div>
 
         <!-- 이름 수정 -->
         <div class="form-group">
@@ -51,12 +46,6 @@
             <label for="profileImage">프로필 이미지</label>
             <input type="file" class="form-control-file" id="profileImage" name="profileImage">
             <img th:src="@{${member.profileImage}}" alt="Profile Image" class="img-fluid mt-3" style="max-width: 200px;">
-        </div>
-
-        <!-- 생년월일 확인 (수정 불가) -->
-        <div class="form-group">
-            <label for="birthDate">생년월일</label>
-            <p id="birthDate" class="form-control-plaintext" th:text="${member.birthDate}"></p>
         </div>
 
         <button type="submit" class="btn btn-primary">수정하기</button>
