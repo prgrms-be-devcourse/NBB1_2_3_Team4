@@ -24,7 +24,12 @@
         button:hover {
             background-color: #0056b3;
         }
+        #map {
+            width: 500px;
+            height: 400px;
+        }
     </style>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=cab40e28a8c1babd29615109dec388af&libraries=services"></script>
 </head>
 <body class="gradient-custom">
 <section class="container-fluid row justify-content-center">
@@ -47,19 +52,84 @@
                     <select id="category2" name="category2" class="form-control" required>
                         <option value="FOOD">먹거리</option>
                         <option value="PLAY">놀거리</option>
-                        <!-- 더 많은 카테고리 추가 가능 -->
                     </select>
                 </div>
+
+                <div id="map"></div> <!-- 지도 -->
 
                 <div class="form-group">
                     <label for="image">이미지:</label>
                     <input type="file" id="image" name="image" class="form-control-file">
                 </div>
-
                 <button type="submit" class="btn btn-primary">등록</button>
             </form>
         </div>
     </div>
 </section>
+<script>
+    function initMap() {
+    var container = document.getElementById('map');
+    var options = {
+        center: new kakao.maps.LatLng(33.450701, 126.570667),
+        level: 3
+    };
+
+    var map = new kakao.maps.Map(container, options);
+    var geocoder = new kakao.maps.services.Geocoder();
+    var marker = new kakao.maps.Marker({position: map.getCenter()});
+    marker.setMap(map);
+
+    // 인포 윈도우를 하나만 생성하여 재사용
+    var infowindow = new kakao.maps.InfoWindow({zindex:1});
+
+    // 지도 클릭 시 마커 이동 및 주소 변환
+    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+        var clickedPosition = mouseEvent.latLng;
+        marker.setPosition(clickedPosition);
+
+        // 좌표를 주소로 변환
+        geocoder.coord2Address(clickedPosition.getLng(), clickedPosition.getLat(), function(result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+                var roadAddress = result[0].road_address ? result[0].road_address.address_name : '';
+                var address = result[0].address.address_name;
+                var fullAddress = roadAddress ? roadAddress + " (" + address + ")" : address;
+
+                // 인포윈도우 내용 업데이트 및 위치 재설정
+                infowindow.setContent('<div style="padding:5px;">' + fullAddress + '</div>');
+                infowindow.open(map, marker);
+
+                // 백엔드로 주소 및 좌표 전송
+                fetch('http://localhost:8080/api/map/marker', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer YOUR_JWT_TOKEN'
+                    },
+                    body: JSON.stringify({
+                        latitude: clickedPosition.getLat(),
+                        longitude: clickedPosition.getLng(),
+                        description: fullAddress
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('네트워크 응답에 문제가 있습니다: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('마커가 성공적으로 저장되었습니다:', data);
+                })
+                .catch(error => {
+                    console.error('마커 저장 중 오류 발생:', error);
+                });
+            }
+        });
+    });
+}
+
+    window.onload = initMap;
+
+</script>
 </body>
 </html>
