@@ -2,11 +2,12 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.4'
     id 'io.spring.dependency-management' version '1.1.6'
-    id 'org.jetbrains.kotlin.jvm' version '1.8.10'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.8.10' // all-open, no-arg 플러그인
+    id 'org.jetbrains.kotlin.jvm' version '1.9.25'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.9.25'
     id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.25'
-    id 'org.jetbrains.kotlin.kapt' version '1.9.21'
+    id 'org.jetbrains.kotlin.kapt' version '1.9.25'
 }
+
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
@@ -31,6 +32,11 @@ dependencies {
     // 코틀린 표준 라이브러리 추가
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlin:kotlin-reflect"
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.1")
+    implementation 'io.netty:netty-resolver-dns-native-macos:4.1.113.Final'
+    implementation 'io.netty:netty-all:4.1.113.Final'
 
     // 모델 맵퍼
     implementation "org.modelmapper:modelmapper:2.4.4"

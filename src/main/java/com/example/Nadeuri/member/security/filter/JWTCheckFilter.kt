@@ -41,7 +41,7 @@ class JWTCheckFilter(
             request.requestURI.startsWith("/img/") -> true
             request.requestURI == "/v1/boards" -> true
             request.requestURI == "/boards/" -> true
-            else -> false
+            else -> true
         }
     }
 
