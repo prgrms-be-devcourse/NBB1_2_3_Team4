@@ -40,8 +40,9 @@ class JWTCheckFilter(
             request.requestURI.startsWith("/board/list") -> true
             request.requestURI.startsWith("/img/") -> true
 
-            request.requestURI == "/v1/boards" -> true
+            request.requestURI == "/v2/boards" -> true
             request.requestURI == "/boards/" -> true
+            request.requestURI.matches(Regex("/board/\\d+")) -> true // 게시글 상세 조회 요청 추가
             else -> false
         }
     }

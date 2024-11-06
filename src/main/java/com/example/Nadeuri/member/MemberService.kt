@@ -72,7 +72,7 @@ class MemberService(
         memberEntity.changeProfileImage(imageUrl)
 
         request.role?.let { memberEntity.changeRole(it) }  // request.role 이 null이 아닐 경우, let 실행
-        request.password?.takeIf{it.isNotEmpty()}?.let { memberEntity.changePassword(passwordEncoder.encode(it)) }
+//        request.password?.takeIf{it.isNotEmpty()}?.let { memberEntity.changePassword(passwordEncoder.encode(it)) }
         request.email?.takeIf{it.isNotEmpty()}?.let { memberEntity.changeEmail(it) }
         request.name?.takeIf{it.isNotEmpty()}?.let { memberEntity.changeName(it) }
         request.nickname?.takeIf{it.isNotEmpty()}?.let { memberEntity.changeNickname(it) }
