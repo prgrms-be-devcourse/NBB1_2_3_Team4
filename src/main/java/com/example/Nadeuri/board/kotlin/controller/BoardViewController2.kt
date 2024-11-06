@@ -75,8 +75,16 @@ class BoardViewController2(
             request.category2
         )
 
-        // 게시글 등록 처리
+
         boardService.register(updatedRequest, image)
         return "redirect:/board/list" // 게시글 목록 페이지로 리다이렉트
     }
+
+    // 게시글 수정 페이지(미완성)
+//    @GetMapping("/{boardId}/edit")
+//    fun editArticle(@PathVariable boardId: Long, model: Model): String {
+//        val article = boardService.read(boardId)
+//        model.addAttribute("article", article)
+//        return "board/update-article"
+//    }
 }

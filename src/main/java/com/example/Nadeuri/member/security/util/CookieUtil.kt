@@ -27,16 +27,4 @@ object CookieUtil {  // 싱글톤 객체로 정의
         }
     }
 
-//    fun serialize(obj: Any): String {
-//        return Base64.getUrlEncoder()
-//            .encodeToString(SerializationUtils.serialize(obj))
-//    }
-//
-//    fun <T> deserialize(cookie: Cookie, cls: Class<T>): T {
-//        return cls.cast(
-//            SerializationUtils.deserialize(
-//                Base64.getUrlDecoder().decode(cookie.value)
-//            )
-//        )
-//    }
 }
