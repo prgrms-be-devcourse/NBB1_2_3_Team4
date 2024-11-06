@@ -42,7 +42,7 @@ class JWTCheckFilter(
 
             request.requestURI == "/v1/boards" -> true
             request.requestURI == "/boards/" -> true
-            else -> true
+            else -> false
         }
     }
 
