@@ -14,7 +14,8 @@ import com.example.Nadeuri.member.exception.MemberException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-@Service
+@Service("commentService")
+
 class CommentServiceImpl(
     private val commentRepository: CommentRepository,
     private val boardRepository: BoardRepository2,
