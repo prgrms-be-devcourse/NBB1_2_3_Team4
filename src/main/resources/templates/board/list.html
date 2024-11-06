@@ -42,12 +42,6 @@
             align-items: center;
             margin-left: auto;
         }
-        .user-info img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
     </style>
 </head>
 <body class="gradient-custom">
@@ -57,11 +51,11 @@
             <div class="button-container">
                 <button id="loginButton" class="btn btn-primary login-button">로그인</button>
                 <button id="createPostButton" class="btn btn-success" style="display: none;">게시물 작성</button>
-                <button id="logoutButton" class="btn btn-danger logout-button">로그아웃</button>
 
                 <div id="userInfoContainer" class="user-info" style="display: none;">
                     <span id="userNameDisplay"></span>
                     <button id="editProfileButton" class="btn btn-info btn-sm" style="margin-left: 10px;">회원정보 수정</button>
+                    <button id="logoutButton" class="btn btn-danger logout-button">로그아웃</button> <!-- 로그아웃 버튼 위치 변경 -->
                 </div>
             </div>
 
@@ -98,7 +92,6 @@
     let totalPosts = 0;
     let currentPage = 1;
 
-    // 로그인된 사용자 정보를 가져오는 함수
     async function fetchUserInfo() {
         try {
             const response = await fetch('/v1/members/me', {
@@ -120,13 +113,11 @@
         }
     }
 
-    // JWT 토큰 확인 함수
     function isLoggedIn() {
         const token = getCookie('accessToken');
         return token && token !== '';
     }
 
-    // 쿠키에서 JWT 토큰 가져오기
     function getCookie(name) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
@@ -143,29 +134,37 @@
                 const noPostsMessage = document.getElementById('noPostsMessage');
                 postsTableBody.innerHTML = '';
 
-                totalPosts = postsData.totalElements;
+                if (postsData && postsData.content) {
+                    totalPosts = postsData.totalElements;
 
-                if (totalPosts === 0) {
-                    noPostsMessage.style.display = '';
-                    return;
+                    if (totalPosts === 0) {
+                        if (noPostsMessage) {
+                            noPostsMessage.style.display = ''; // 요소가 존재할 때만 표시
+                        }
+                        return;
+                    } else {
+                        if (noPostsMessage) {
+                            noPostsMessage.style.display = 'none'; // 요소가 존재할 때만 숨김
+                        }
+                    }
+
+                    postsData.content.forEach(post => {
+                        const row = postsTableBody.insertRow();
+                        row.innerHTML = `
+                        <td>${post.id}</td>
+                        <td onclick="viewBoard(${post.id})" style="cursor:pointer; color:blue;">${post.boardTitle}</td>
+                        <td>${post.member}</td>
+                        <td>${post.createdAt}</td>
+                    `;
+                    });
+
+                    updatePagination(page);
                 } else {
-                    noPostsMessage.style.display = 'none';
+                    console.error('postsData 구조 확인 필요:', postsData);
                 }
-
-                postsData.content.forEach(post => {
-                    const row = postsTableBody.insertRow();
-                    row.innerHTML = `
-                    <td>${post.id}</td>
-                    <td onclick="viewBoard(${post.id})" style="cursor:pointer; color:blue;">${post.boardTitle}</td>
-                    <td>${post.member}</td>
-                    <td>${post.createdAt}</td>
-                `;
-                });
-
-                updatePagination(page);
             })
             .catch(error => {
-                console.error('Error loading posts:', error);
+                console.error('게시물 로드 에러:', error);
             });
     }
 
@@ -201,8 +200,8 @@
         }
     }
 
-    // 페이지 로드 시 로그인 상태 확인 및 사용자 정보 가져오기
     window.onload = async function() {
+
         if (isLoggedIn()) {
             document.getElementById('loginButton').style.display = 'none';
             document.getElementById('createPostButton').style.display = 'block';
@@ -210,11 +209,7 @@
 
             const userInfo = await fetchUserInfo();
             if (userInfo) {
-                const userName = userInfo.name;
-                const profileImage = userInfo.profileImage;
-
-                document.getElementById('userNameDisplay').innerText = userName;
-                document.getElementById('userProfileImage').src = profileImage;
+                document.getElementById('userNameDisplay').innerText = userInfo.name;
                 document.getElementById('userInfoContainer').style.display = 'flex';
             }
         } else {
@@ -225,22 +220,18 @@
         loadPosts(1);
     };
 
-    // 로그인 버튼 클릭 시 /members/login 페이지로 이동
     document.getElementById('loginButton').addEventListener('click', function() {
         window.location.href = '/members/login';
     });
 
-    // 로그아웃 버튼 클릭 시 /members/logout 페이지로 이동
     document.getElementById('logoutButton').addEventListener('click', function() {
         window.location.href = '/members/logout';
     });
 
-    // 게시물 작성 버튼 클릭 시 /board/create 페이지로 이동
     document.getElementById('createPostButton').addEventListener('click', function() {
         window.location.href = '/board/create';
     });
 
-    // 회원정보 수정 버튼 클릭 시 /members/edit 페이지로 이동
     document.getElementById('editProfileButton').addEventListener('click', function() {
         window.location.href = '/members/edit';
     });
